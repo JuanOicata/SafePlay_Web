@@ -1,14 +1,13 @@
 const $ = (sel) => document.querySelector(sel);
 const msg = $('#message');
-
-function showMessage(t, ok=false) {
+const showMessage = (t, ok=false) => {
   if (!msg) return;
   msg.style.display = 'block';
   msg.textContent = t;
   msg.style.color = ok ? 'green' : 'crimson';
-}
+};
 
-/* ---------- Registro (si existe el form) ---------- */
+// Registro
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
   registerForm.addEventListener('submit', async (e) => {
@@ -22,7 +21,8 @@ if (registerForm) {
       phone: registerForm.phone.value.trim(),
       terms: registerForm.terms.checked
     };
-    if (body.password !== body.confirmPassword) return showMessage('Las contraseñas no coinciden');
+    if (body.password !== body.confirmPassword)
+      return showMessage('Las contraseñas no coinciden');
 
     const res = await fetch('/api/auth/register', {
       method: 'POST',
@@ -30,14 +30,15 @@ if (registerForm) {
       body: JSON.stringify(body)
     });
     const data = await res.json();
-    if (data.error) return showMessage(`❌ ${data.error}`);
+    if (!res.ok || data.error) return showMessage(`❌ ${data.error || 'Error'}`);
+
     localStorage.setItem('token', data.token);
-    showMessage('✅ Cuenta creada. Redirigiendo...', true);
-    setTimeout(() => location.href = '/templates/login.html', 900);
+    showMessage('✅ Cuenta creada. Entrando...', true);
+    setTimeout(() => location.href = '/dashboard', 600);
   });
 }
 
-/* ---------- Login (si existe el form) ---------- */
+// Login
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
@@ -51,11 +52,10 @@ if (loginForm) {
       body: JSON.stringify({ identifier: email, password })
     });
     const data = await res.json();
-    if (data.error) return showMessage(`❌ ${data.error}`);
+    if (!res.ok || data.error) return showMessage(`❌ ${data.error || 'Error'}`);
 
     localStorage.setItem('token', data.token);
-    showMessage('✅ Login exitoso. Entrando...', true);
-    // Redirige a tu panel/dash
-    setTimeout(() => location.href = '/templates/index.html', 700);
+    showMessage('✅ Login exitoso. Redirigiendo...', true);
+    setTimeout(() => location.href = '/dashboard', 500);
   });
 }

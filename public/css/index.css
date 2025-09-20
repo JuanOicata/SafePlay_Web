@@ -4,6 +4,13 @@
     box-sizing: border-box;
 }
 
+html {
+    /* desplazamiento suave a anchors (#features, etc.) */
+    scroll-behavior: smooth;
+    /* altura de compensación para header fijo (ajústala si tu header cambia) */
+    --header-h: 100px;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -99,6 +106,7 @@ nav {
 
 /* Hero Section */
 .hero {
+    /* deja espacio arriba por el header fijo */
     padding: 120px 0 80px;
     text-align: center;
     background: linear-gradient(135deg, #87CEEB 0%, #ffffff 50%, #87CEEB 100%);
@@ -170,6 +178,9 @@ nav {
 .features {
     padding: 80px 0;
     background: rgba(255, 255, 255, 0.9);
+
+    /* que el ancla no quede tapada por el header */
+    scroll-margin-top: var(--header-h);
 }
 
 .features h2 {
@@ -228,6 +239,9 @@ nav {
 .user-types {
     padding: 80px 0;
     background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+
+    /* por si enlazas a esta sección con #id */
+    scroll-margin-top: var(--header-h);
 }
 
 .user-types h2 {
@@ -357,11 +371,13 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
+
 h2 {
     text-align: center;
     color: #4682B4;
 }
 
+/* (estos estilos venían para formularios compartidos, los mantenemos) */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -407,6 +423,6 @@ h2 {
 }
 
 .logo-pequeno {
-    width: 150px; /* O el tamaño que prefieras */
-    height: auto; /* Mantiene la proporción original */
+    width: 150px;
+    height: auto;
 }

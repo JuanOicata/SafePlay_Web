@@ -4,7 +4,7 @@ const { Supervisor } = require('../models');
 
 router.get('/me', authRequired, async (req, res) => {
   const sup = await Supervisor.findByPk(req.user.id, {
-    attributes: ['id', 'username', 'email', 'fullName', 'phone', 'createdAt', 'updatedAt']
+    attributes: ['id', 'username', 'email', 'fullName', 'phone', 'createdAt']
   });
   if (!sup) return res.status(404).json({ error: 'No encontrado' });
   res.json(sup);

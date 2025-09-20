@@ -9,7 +9,7 @@ function authRequired(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretito');
     req.user = decoded;
     next();
-  } catch (e) {
+  } catch {
     return res.status(401).json({ error: 'Token inválido o expirado' });
   }
 }

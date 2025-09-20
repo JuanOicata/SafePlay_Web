@@ -12,18 +12,13 @@ const signToken = (payload) =>
 router.post('/register', async (req, res) => {
   try {
     const { username, email, password, fullName, phone, terms } = req.body;
-
     if (!username || !email || !password || !fullName)
       return res.status(400).json({ error: 'Faltan datos obligatorios' });
-
     if (!terms)
       return res.status(400).json({ error: 'Debes aceptar los términos' });
 
-    const dupEmail = await Supervisor.findOne({ where: { email } });
-    if (dupEmail) return res.status(400).json({ error: 'El correo ya está registrado' });
-
-    const dupUser = await Supervisor.findOne({ where: { username } });
-    if (dupUser) return res.status(400).json({ error: 'El nombre de usuario ya está en uso' });
+    const dup = await Supervisor.findOne({ where: { email } });
+    if (dup) return res.status(400).json({ error: 'El correo ya está registrado' });
 
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -32,18 +27,13 @@ router.post('/register', async (req, res) => {
     });
 
     const token = signToken({ id: sup.id, username: sup.username });
-
-    res.json({
-      message: '✅ Supervisor registrado',
-      token,
-      supervisor: { id: sup.id, username: sup.username, email: sup.email, fullName: sup.fullName }
-    });
+    res.json({ message: '✅ Supervisor registrado', token });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-// Login (identifier = email o username)
+// Login
 router.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -58,12 +48,7 @@ router.post('/login', async (req, res) => {
     if (!ok) return res.status(401).json({ error: 'Contraseña incorrecta' });
 
     const token = signToken({ id: sup.id, username: sup.username });
-
-    res.json({
-      message: '✅ Login exitoso',
-      token,
-      supervisor: { id: sup.id, username: sup.username, email: sup.email, fullName: sup.fullName }
-    });
+    res.json({ message: '✅ Login exitoso', token });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

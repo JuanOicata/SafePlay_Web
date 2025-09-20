@@ -11,8 +11,11 @@
   <nav class="container">
     <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno">
     <div class="nav-buttons">
-      <a id="btnLogin" href="/login" class="btn btn-secondary">Iniciar Sesión</a>
-      <a id="btnRegister" href="/register" class="btn btn-primary">Registrarse</a>
+      <!-- IDs añadidos -->
+      <a id="btnLogin" href="/templates/index.html" class="btn btn-secondary">Inicio</a>
+      <a id="btnRegister" href="/templates/login.html" class="btn btn-primary">Iniciar Sesión</a>
+
+      <!-- Solo con sesión -->
       <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
       <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
     </div>
@@ -27,6 +30,7 @@
 
       <form class="auth-form" id="registerForm">
         <h2>Nuevo Supervisor</h2>
+
         <input type="text" id="username" name="username" placeholder="Nombre de usuario" required minlength="3">
         <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
         <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="6">
@@ -42,11 +46,11 @@
         <button type="submit" class="btn-register">Crear Cuenta</button>
 
         <div class="auth-links">
-          <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
+          <p>¿Ya tienes cuenta? <a href="/templates/login.html">Inicia sesión aquí</a></p>
         </div>
       </form>
 
-      <div id="message" class="message" style="display: none;"></div>
+      <div id="message" class="message" style="display:none;"></div>
     </div>
   </div>
 </section>
@@ -60,7 +64,7 @@
       </div>
       <div class="footer-section">
         <h4>Enlaces Rápidos</h4>
-        <p><a href="/">Inicio</a> • <a href="/#features">Características</a> • <a href="/dashboard">Dashboard</a></p>
+        <p>Inicio • Características • Dashboard</p>
       </div>
       <div class="footer-section">
         <h4>Contacto</h4>
@@ -74,6 +78,6 @@
 </footer>
 
 <script src="/js/auth.js"></script>
-<script src="/js/main.js"></script>
+<script src="/js/main.js" defer></script>
 </body>
 </html>
