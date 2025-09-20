@@ -1,0 +1,61 @@
+const $ = (sel) => document.querySelector(sel);
+const msg = $('#message');
+
+function showMessage(t, ok=false) {
+  if (!msg) return;
+  msg.style.display = 'block';
+  msg.textContent = t;
+  msg.style.color = ok ? 'green' : 'crimson';
+}
+
+/* ---------- Registro (si existe el form) ---------- */
+const registerForm = document.getElementById('registerForm');
+if (registerForm) {
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = {
+      username: registerForm.username.value.trim(),
+      email: registerForm.email.value.trim(),
+      password: registerForm.password.value,
+      confirmPassword: registerForm.confirmPassword.value,
+      fullName: registerForm.fullName.value.trim(),
+      phone: registerForm.phone.value.trim(),
+      terms: registerForm.terms.checked
+    };
+    if (body.password !== body.confirmPassword) return showMessage('Las contraseñas no coinciden');
+
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.error) return showMessage(`❌ ${data.error}`);
+    localStorage.setItem('token', data.token);
+    showMessage('✅ Cuenta creada. Redirigiendo...', true);
+    setTimeout(() => location.href = '/templates/login.html', 900);
+  });
+}
+
+/* ---------- Login (si existe el form) ---------- */
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = loginForm.email.value.trim();
+    const password = loginForm.password.value;
+
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier: email, password })
+    });
+    const data = await res.json();
+    if (data.error) return showMessage(`❌ ${data.error}`);
+
+    localStorage.setItem('token', data.token);
+    showMessage('✅ Login exitoso. Entrando...', true);
+    // Redirige a tu panel/dash
+    setTimeout(() => location.href = '/templates/index.html', 700);
+  });
+}

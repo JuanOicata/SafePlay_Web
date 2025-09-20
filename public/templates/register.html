@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrarse - SafePlay</title>
+  <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+<header>
+  <nav class="container">
+    <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno">
+    <div class="nav-buttons">
+      <a id="btnLogin" href="/login" class="btn btn-secondary">Iniciar Sesión</a>
+      <a id="btnRegister" href="/register" class="btn btn-primary">Registrarse</a>
+      <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
+      <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Crear Cuenta de Supervisor</h1>
+      <p>Regístrate para obtener control completo sobre el acceso a juegos</p>
+
+      <form class="auth-form" id="registerForm">
+        <h2>Nuevo Supervisor</h2>
+        <input type="text" id="username" name="username" placeholder="Nombre de usuario" required minlength="3">
+        <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+        <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="6">
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required minlength="6">
+        <input type="text" id="fullName" name="fullName" placeholder="Nombre completo" required>
+        <input type="tel" id="phone" name="phone" placeholder="Teléfono (opcional)">
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms">Acepto los <a href="#">términos y condiciones</a></label>
+        </div>
+
+        <button type="submit" class="btn-register">Crear Cuenta</button>
+
+        <div class="auth-links">
+          <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
+        </div>
+      </form>
+
+      <div id="message" class="message" style="display: none;"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>SafePlay</h4>
+        <p>Control remoto de juegos para supervisores responsables.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
+        <p><a href="/">Inicio</a> • <a href="/#features">Características</a> • <a href="/dashboard">Dashboard</a></p>
+      </div>
+      <div class="footer-section">
+        <h4>Contacto</h4>
+        <p>soporte@safeplay.com<br>+57 - 3224687627</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 SafePlay. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>

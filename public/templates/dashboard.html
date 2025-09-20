@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Panel del Supervisor</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 1.25rem; max-width: 720px; }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .muted { color: #666; }
+    button { padding: .6rem 1rem; border-radius: 8px; border: 1px solid #999; cursor: pointer; }
+    .danger { background: #f44336; color: white; border-color: #f44336; }
+  </style>
+</head>
+<body>
+  <h1 id="title">Cargando…</h1>
+
+  <div class="card">
+    <p class="muted">Información de tu sesión</p>
+    <div class="row">
+      <div><strong>Usuario:</strong> <span id="username">—</span></div>
+      <div><strong>Nombre:</strong> <span id="fullName">—</span></div>
+      <div><strong>Email:</strong> <span id="email">—</span></div>
+      <div><strong>Teléfono:</strong> <span id="phone">—</span></div>
+    </div>
+    <p class="muted">Creado: <span id="createdAt">—</span> · Actualizado: <span id="updatedAt">—</span></p>
+
+    <div style="margin-top:1rem; display:flex; gap:.5rem;">
+      <button id="goHome">Inicio</button>
+      <button id="logout" class="danger">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <script>
+    function fmtDate(s) {
+      try { return new Date(s).toLocaleString(); } catch { return s || '—'; }
+    }
+
+    async function loadMe() {
+      const token = localStorage.getItem('token');
+      if (!token) return location.replace('/login');
+
+      const res = await fetch('/api/me', { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        localStorage.removeItem('token');
+        return location.replace('/login');
+      }
+
+      // Pintar datos
+      document.getElementById('title').textContent = `Bienvenido, ${data.fullName}`;
+      document.getElementById('username').textContent = data.username || '—';
+      document.getElementById('fullName').textContent = data.fullName || '—';
+      document.getElementById('email').textContent = data.email || '—';
+      document.getElementById('phone').textContent = data.phone || '—';
+      document.getElementById('createdAt').textContent = fmtDate(data.createdAt);
+      document.getElementById('updatedAt').textContent = fmtDate(data.updatedAt);
+    }
+
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      location.replace('/login');
+    });
+
+    document.getElementById('goHome').addEventListener('click', () => {
+      location.href = '/';
+    });
+
+    loadMe();
+  </script>
+</body>
+</html>

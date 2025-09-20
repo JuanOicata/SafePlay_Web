@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>SafePlay - Inicio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- ================== Header ================== -->
+  <header>
+    <nav class="container">
+      <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno">
+
+      <div class="nav-buttons">
+        <!-- visibles cuando NO hay sesión -->
+        <a id="btnLogin" href="/login" class="btn btn-secondary">Iniciar Sesión</a>
+        <a id="btnRegister" href="/register" class="btn btn-primary">Registrarse</a>
+
+        <!-- visibles cuando SÍ hay sesión -->
+        <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
+        <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================== Hero ================== -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="fade-in">Bienvenido a SafePlay</h1>
+      <p class="fade-in">La mejor forma de gestionar la seguridad y control de juegos.</p>
+      <a href="#features" class="btn btn-primary" id="startBtn">Comenzar</a>
+    </div>
+  </section>
+
+  <!-- ================== Features ================== -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="fade-in">Características</h2>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <h3>Supervisión</h3>
+          <p>Controla la actividad de tus supervisores fácilmente.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <h3>Seguridad</h3>
+          <p>Acceso seguro mediante autenticación JWT.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <h3>Escalabilidad</h3>
+          <p>Despliegue en la nube con Render y PostgreSQL.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== Testimonios ================== -->
+  <section class="testimonios">
+    <div class="container">
+      <h2 class="fade-in">Lo que dicen nuestros usuarios</h2>
+      <div class="user-cards">
+        <div class="user-card fade-in">
+          <p>"SafePlay ha hecho mucho más fácil nuestro trabajo."</p>
+          <span>- Juan, Supervisor</span>
+        </div>
+        <div class="user-card fade-in">
+          <p>"La seguridad que ofrece es incomparable."</p>
+          <span>- María, Administradora</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== CTA ================== -->
+  <section class="cta">
+    <div class="container">
+      <h2 class="fade-in">¿Listo para empezar?</h2>
+      <a href="/register" class="btn btn-primary fade-in">Crea tu cuenta</a>
+    </div>
+  </section>
+
+  <!-- ================== Footer ================== -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 SafePlay. Todos los derechos reservados.</p>
+      <p><a href="/dashboard">Ir al Panel</a></p>
+    </div>
+  </footer>
+
+  <!-- ================== Scripts ================== -->
+  <script src="/js/main.js"></script>
+</body>
+</html>
