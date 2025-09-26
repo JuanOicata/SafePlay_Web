@@ -32,7 +32,9 @@ app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/
 app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/login.html')));
 app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/register.html')));
 app.get('/dashboard', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/dashboard.html')));
-
+app.get('/download', (req, res) => {
+  res.render('download');
+});
 app.use('/api/auth', require('./src/routes/auth'));
 app.use('/api', require('./src/routes/me'));
 
