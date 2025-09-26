@@ -63,6 +63,8 @@ nav {
 .nav-buttons {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .btn {
@@ -76,6 +78,7 @@ nav {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .btn-primary {
@@ -88,6 +91,41 @@ nav {
     background: transparent;
     color: #4682B4;
     border: 2px solid #87CEEB;
+}
+
+/* Nuevo botón de descarga */
+.btn-download {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+}
+
+.btn-download:hover {
+    background: linear-gradient(45deg, #218838, #1ba085);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+}
+
+.download-icon {
+    font-size: 1.2rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-3px);
+    }
+    60% {
+        transform: translateY(-2px);
+    }
 }
 
 .btn:hover {
@@ -161,6 +199,8 @@ nav {
     margin-top: 2rem;
     opacity: 0;
     animation: fadeInUp 1s ease 0.4s forwards;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 @keyframes fadeInUp {
@@ -357,6 +397,11 @@ footer {
 
     .user-grid {
         grid-template-columns: 1fr;
+    }
+
+    .btn-download {
+        font-size: 0.8rem;
+        padding: 8px 16px;
     }
 }
 
