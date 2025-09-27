@@ -33,6 +33,7 @@ router.post('/register', async (req, res) => {
     const { token, hash } = generateVerifyToken();
     const expires = new Date(Date.now() + ttlMs());
 
+    // Crear usuario NO verificado
     const sup = await Supervisor.create({
       username, email, passwordHash, fullName, phone,
       acceptedTermsAt: new Date(),
@@ -42,11 +43,19 @@ router.post('/register', async (req, res) => {
     });
 
     const verifyUrl = `${process.env.APP_BASE_URL}/api/auth/verify?uid=${encodeURIComponent(sup.id)}&token=${token}`;
-    await sendVerificationEmail(email, verifyUrl);
+
+    try {
+      await sendVerificationEmail(email, verifyUrl);
+    } catch (err) {
+      console.error('❌ Registro fallido: no se pudo enviar el correo');
+      // Si quieres evitar usuarios “colgados” cuando falla el email, borra el registro:
+      await Supervisor.destroy({ where: { id: sup.id } });
+      return res.status(502).json({ error: 'No se pudo enviar el correo de verificación. Intenta más tarde.' });
+    }
 
     return res.json({ message: '✅ Registro exitoso. Revisa tu correo para verificar la cuenta.' });
   } catch (e) {
-    console.error(e);
+    console.error('❌ Error en /register:', e);
     res.status(500).json({ error: 'No se pudo registrar' });
   }
 });

@@ -19,15 +19,13 @@ if (!DEV_LOG_ONLY) {
       user: process.env.SMTP_USER,              // tu_correo@gmail.com
       pass: process.env.SMTP_PASS               // App Password (Gmail)
     }
-    // tls: { rejectUnauthorized: false } // solo si tu proveedor lo requiere
+    // tls: { rejectUnauthorized: false } // Descomenta solo si tu proveedor lo requiere
   });
 
   // (Opcional) Verifica credenciales al iniciar
-  transporter.verify().then(() => {
-    console.log('📧 SMTP listo para enviar correos.');
-  }).catch((err) => {
-    console.error('⚠️ Error verificando SMTP:', err.message);
-  });
+  transporter.verify()
+    .then(() => console.log('📧 SMTP listo para enviar correos.'))
+    .catch((err) => console.error('⚠️ Error verificando SMTP:', err.message));
 } else {
   console.log('📧 Modo consola: SMTP no configurado, los enlaces se mostrarán en logs.');
 }
@@ -56,15 +54,22 @@ async function sendVerificationEmail(to, verifyUrl) {
 
   if (DEV_LOG_ONLY) {
     console.log('🔗 [DEV] Enlace de verificación:', verifyUrl);
-    return;
+    return true;
   }
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || process.env.SMTP_USER, // ej. "SafePlay <tu_correo@gmail.com>"
-    to,
-    subject: 'Verificación de correo - SafePlay',
-    html
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || process.env.SMTP_USER, // ej. "SafePlay <tu_correo@gmail.com>"
+      to,
+      subject: 'Verificación de correo - SafePlay',
+      html
+    });
+    console.log(`📧 Correo de verificación enviado a ${to}`);
+    return true;
+  } catch (err) {
+    console.error('❌ Error enviando correo:', err.message);
+    throw err; // Propaga el error para que el /register responda 502
+  }
 }
 
 module.exports = { sendVerificationEmail };
