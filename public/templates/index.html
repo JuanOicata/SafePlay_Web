@@ -7,141 +7,147 @@
   <link rel="stylesheet" href="/css/index.css" />
 </head>
 <body>
-  <!-- Header fijo -->
-  <header>
-    <nav class="container">
-      <a href="/" class="logo">
-        <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno" />
-      </a>
-      <div class="nav-buttons">
-        <!-- IDs para que main.js muestre/oculte según JWT -->
-        <a id="btnLogin" href="/login" class="btn btn-secondary">Iniciar Sesión</a>
-        <a id="btnRegister" href="/register" class="btn btn-primary">Registrarse</a>
-        <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
-        <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
-      </div>
-    </nav>
-  </header>
+<!-- Header fijo -->
+<header>
+  <nav class="container">
+    <a href="/" class="logo">
+      <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno" />
+    </a>
+    <div class="nav-buttons">
+      <!-- IDs para que main.js muestre/oculte según JWT -->
+      <a id="btnLogin" href="/login" class="btn btn-secondary">Iniciar Sesión</a>
+      <a id="btnRegister" href="/register" class="btn btn-primary">Registrarse</a>
+      <a href="/download" class="btn btn-download">Descargar App</a>
+      <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
+      <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
+    </div>
+  </nav>
+</header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <h1>Control de Juegos para Supervisores</h1>
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Control de Juegos para Supervisores</h1>
+      <p>
+        Supervisa y controla el acceso a juegos de Steam de forma remota.
+        Una plataforma diseñada para supervisores que necesitan gestionar el tiempo de juego.
+      </p>
+      <div class="hero-buttons">
+        <a href="/register" class="btn btn-primary" id="startBtn">Comenzar Ahora</a>
+        <!-- este anchor hace scroll suave hacia la sección -->
+        <a href="#features" class="btn btn-secondary" id="featuresBtn">Ver Características</a>
+        <a href="/download" class="btn btn-download" id="downloadBtn">
+          <span class="download-icon">⬇️</span>
+          Descargar Ejecutable
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Características -->
+<section class="features" id="features">
+  <div class="container">
+    <h2>Características Principales</h2>
+
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🎮</span>
+        <h3>Control de Steam</h3>
+        <p>Controla el acceso a juegos de Steam de forma remota mediante un ejecutable en las computadoras de los jugadores.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <span class="feature-icon">📊</span>
+        <h3>Panel de Control</h3>
+        <p>Dashboard intuitivo para ver el estado de los jugadores y gestionar acciones de bloqueo de forma centralizada.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🔒</span>
+        <h3>Bloqueo Remoto</h3>
+        <p>Envía comandos de bloqueo/desbloqueo a las computadoras de los jugadores en tiempo real desde cualquier lugar.</p>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <span class="feature-icon">👥</span>
+        <h3>Gestión de Jugadores</h3>
+        <p>Vincula y gestiona múltiples jugadores desde una sola cuenta de supervisor con control total.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🌐</span>
+        <h3>Acceso Web</h3>
+        <p>Interfaz web responsive que permite el control desde cualquier dispositivo con conexión a internet.</p>
+      </div>
+
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🛡️</span>
+        <h3>Supervisión Segura</h3>
+        <p>Autenticación robusta con gestión segura de sesiones y credenciales.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tipos de usuario (opcional, mantiene tu estructura) -->
+<section class="user-types">
+  <div class="container">
+    <h2>¿Para quién es?</h2>
+    <div class="user-grid">
+      <div class="user-card fade-in">
+        <h3>👨‍👩‍👧 Supervisores</h3>
+        <ul class="user-features">
+          <li>Define horarios de uso</li>
+          <li>Bloqueo y desbloqueo remoto</li>
+          <li>Panel con estado en tiempo real</li>
+        </ul>
+      </div>
+      <div class="user-card fade-in">
+        <h3>🏫 Instituciones</h3>
+        <ul class="user-features">
+          <li>Gestión multi-equipo</li>
+          <li>Reglas centralizadas</li>
+          <li>Acceso por roles</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>WebSupervisor</h4>
+        <p>Control remoto de juegos para supervisores responsables con tecnología confiable.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
         <p>
-          Supervisa y controla el acceso a juegos de Steam de forma remota.
-          Una plataforma diseñada para supervisores que necesitan gestionar el tiempo de juego.
+          <a href="/" style="color:#87CEEB; text-decoration:none;">Inicio</a> •
+          <a href="#features" style="color:#87CEEB; text-decoration:none;">Características</a> •
+          <a href="/register" style="color:#87CEEB; text-decoration:none;">Registro</a> •
+          <a href="/dashboard" style="color:#87CEEB; text-decoration:none;">Dashboard</a> •
+          <a href="/download" style="color:#87CEEB; text-decoration:none;">Descarga</a>
         </p>
-        <div class="hero-buttons">
-          <a href="/register" class="btn btn-primary" id="startBtn">Comenzar Ahora</a>
-          <!-- este anchor hace scroll suave hacia la sección -->
-          <a href="#features" class="btn btn-secondary" id="featuresBtn">Ver Características</a>
-        </div>
+      </div>
+      <div class="footer-section">
+        <h4>Contacto</h4>
+        <p>soporte@websupervisor.com<br/>+57 - 3224687627</p>
       </div>
     </div>
-  </section>
-
-  <!-- Características -->
-  <section class="features" id="features">
-    <div class="container">
-      <h2>Características Principales</h2>
-
-      <div class="features-grid">
-        <div class="feature-card fade-in">
-          <span class="feature-icon">🎮</span>
-          <h3>Control de Steam</h3>
-          <p>Controla el acceso a juegos de Steam de forma remota mediante un ejecutable en las computadoras de los jugadores.</p>
-        </div>
-
-        <div class="feature-card fade-in">
-          <span class="feature-icon">📊</span>
-          <h3>Panel de Control</h3>
-          <p>Dashboard intuitivo para ver el estado de los jugadores y gestionar acciones de bloqueo de forma centralizada.</p>
-        </div>
-
-        <div class="feature-card fade-in">
-          <span class="feature-icon">🔒</span>
-          <h3>Bloqueo Remoto</h3>
-          <p>Envía comandos de bloqueo/desbloqueo a las computadoras de los jugadores en tiempo real desde cualquier lugar.</p>
-        </div>
-      </div>
-
-      <div class="features-grid">
-        <div class="feature-card fade-in">
-          <span class="feature-icon">👥</span>
-          <h3>Gestión de Jugadores</h3>
-          <p>Vincula y gestiona múltiples jugadores desde una sola cuenta de supervisor con control total.</p>
-        </div>
-
-        <div class="feature-card fade-in">
-          <span class="feature-icon">🌐</span>
-          <h3>Acceso Web</h3>
-          <p>Interfaz web responsive que permite el control desde cualquier dispositivo con conexión a internet.</p>
-        </div>
-
-        <div class="feature-card fade-in">
-          <span class="feature-icon">🛡️</span>
-          <h3>Supervisión Segura</h3>
-          <p>Autenticación robusta con gestión segura de sesiones y credenciales.</p>
-        </div>
-      </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 WebSupervisor. Todos los derechos reservados.</p>
     </div>
-  </section>
+  </div>
+</footer>
 
-  <!-- Tipos de usuario (opcional, mantiene tu estructura) -->
-  <section class="user-types">
-    <div class="container">
-      <h2>¿Para quién es?</h2>
-      <div class="user-grid">
-        <div class="user-card fade-in">
-          <h3>👨‍👩‍👧 Supervisores</h3>
-          <ul class="user-features">
-            <li>Define horarios de uso</li>
-            <li>Bloqueo y desbloqueo remoto</li>
-            <li>Panel con estado en tiempo real</li>
-          </ul>
-        </div>
-        <div class="user-card fade-in">
-          <h3>🏫 Instituciones</h3>
-          <ul class="user-features">
-            <li>Gestión multi-equipo</li>
-            <li>Reglas centralizadas</li>
-            <li>Acceso por roles</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h4>WebSupervisor</h4>
-          <p>Control remoto de juegos para supervisores responsables con tecnología confiable.</p>
-        </div>
-        <div class="footer-section">
-          <h4>Enlaces Rápidos</h4>
-          <p>
-            <a href="/" style="color:#87CEEB; text-decoration:none;">Inicio</a> •
-            <a href="#features" style="color:#87CEEB; text-decoration:none;">Características</a> •
-            <a href="/register" style="color:#87CEEB; text-decoration:none;">Registro</a> •
-            <a href="/dashboard" style="color:#87CEEB; text-decoration:none;">Dashboard</a>
-          </p>
-        </div>
-        <div class="footer-section">
-          <h4>Contacto</h4>
-          <p>soporte@websupervisor.com<br/>+57 - 3224687627</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 WebSupervisor. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- JS de tu proyecto -->
-  <script src="/js/main.js"></script>
+<!-- JS de tu proyecto -->
+<script src="/js/main.js"></script>
 </body>
 </html>

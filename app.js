@@ -28,10 +28,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Rutas usando res.sendFile() para mantener consistencia
 app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/index.html')));
 app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/login.html')));
 app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/register.html')));
 app.get('/dashboard', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/dashboard.html')));
+
+// Ruta de descarga corregida - usando res.sendFile() como las demás
+app.get('/download', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/download.html'));
+});
 
 app.use('/api/auth', require('./src/routes/auth'));
 app.use('/api', require('./src/routes/me'));
