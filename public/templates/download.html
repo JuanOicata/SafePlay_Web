@@ -32,48 +32,26 @@
             <p>Descarga el ejecutable para instalar en las computadoras de los jugadores y comenzar el control remoto de Steam</p>
         </div>
 
-        <div class="download-cards">
-            <!-- Descarga Principal -->
+        <!-- Tarjeta de descarga única -->
+        <div class="single-download-card">
             <div class="download-card">
                 <span class="download-icon">💻</span>
-                <h3>WebSupervisor Client</h3>
+                <h3>SafePlay.exe</h3>
                 <p>Aplicación principal que se instala en la computadora del jugador. Permite el control remoto de Steam y la comunicación con el panel web.</p>
 
-                <!-- Aquí puedes cambiar la URL por tu servicio de hosting -->
                 <a href="#" class="download-btn" id="mainDownloadBtn">
                     <span>⬇️</span>
-                    Descargar Ahora
+                    Descargar SafePlay.exe
                 </a>
 
                 <div class="file-info">
                     <h4>Información del archivo:</h4>
                     <ul>
-                        <li>Tamaño: ~110 MB</li>
+                        <li>Tamaño: 201 MB</li>
                         <li>Versión: 1.0.0</li>
                         <li>Última actualización: Enero 2025</li>
                         <li>Compatibilidad: Windows 10/11</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Descarga alternativa o manual -->
-            <div class="download-card">
-                <span class="download-icon">📋</span>
-                <h3>Instalación Manual</h3>
-                <p>Si tienes problemas con la descarga automática, puedes solicitar el archivo directamente o acceder a instrucciones detalladas de instalación.</p>
-
-                <a href="mailto:soporte@websupervisor.com?subject=Solicitud de ejecutable WebSupervisor" class="download-btn secondary">
-                    <span>📧</span>
-                    Solicitar por Email
-                </a>
-
-                <div class="file-info">
-                    <h4>Incluye:</h4>
-                    <ul>
-                        <li>Manual de instalación</li>
-                        <li>Guía de configuración</li>
-                        <li>Soporte técnico</li>
-                        <li>Actualizaciones automáticas</li>
+                        <li>Archivo: SafePlay.exe</li>
                     </ul>
                 </div>
             </div>
@@ -82,7 +60,7 @@
         <!-- Advertencia importante -->
         <div class="warning-box">
             <h4>⚠️ Importante</h4>
-            <p>El ejecutable debe instalarse en cada computadora que se desee controlar. Asegúrate de que Steam esté instalado y configurado antes de ejecutar WebSupervisor Client. Se requieren permisos de administrador para la instalación.</p>
+            <p>El ejecutable debe instalarse en cada computadora que se desee controlar. Asegúrate de que Steam esté instalado y configurado antes de ejecutar SafePlay.exe. Se requieren permisos de administrador para la instalación.</p>
         </div>
 
         <!-- Requisitos del sistema -->
@@ -102,7 +80,7 @@
                 <div class="req-item">
                     <span>💾</span>
                     <h4>Espacio en Disco</h4>
-                    <p>150 MB libres<br>Para instalación</p>
+                    <p>250 MB libres<br>Para instalación</p>
                 </div>
                 <div class="req-item">
                     <span>🌐</span>
@@ -127,12 +105,12 @@
             <h3>Pasos de Instalación</h3>
             <div class="instructions-container">
                 <div class="req-item instruction-step">
-                    <h4>1. Descarga el ejecutable</h4>
-                    <p>Haz clic en "Descargar Ahora" y guarda el archivo en tu computadora.</p>
+                    <h4>1. Descarga SafePlay.exe</h4>
+                    <p>Haz clic en "Descargar SafePlay.exe" y guarda el archivo en tu computadora.</p>
                 </div>
                 <div class="req-item instruction-step">
                     <h4>2. Ejecutar como administrador</h4>
-                    <p>Haz clic derecho sobre el archivo descargado y selecciona "Ejecutar como administrador".</p>
+                    <p>Haz clic derecho sobre SafePlay.exe y selecciona "Ejecutar como administrador".</p>
                 </div>
                 <div class="req-item instruction-step">
                     <h4>3. Configuración inicial</h4>
@@ -177,7 +155,6 @@
 
 <script src="/js/main.js"></script>
 <script>
-    // Animaciones al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
         // Animar elementos cuando se cargan
         const animatedElements = document.querySelectorAll('.download-card, .requirements, .warning-box');
@@ -187,22 +164,29 @@
             }, index * 200);
         });
 
-        // Manejar el botón de descarga principal
+        // Configurar descarga desde GitHub Releases
         const mainDownloadBtn = document.getElementById('mainDownloadBtn');
         mainDownloadBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            // Aquí puedes implementar la lógica de descarga
-            // Por ejemplo, redireccionar a tu servicio de hosting de archivos
+            // Mostrar feedback al usuario
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span>⏳</span> Iniciando descarga...';
+            this.style.opacity = '0.7';
 
-            // Opción 1: Descarga directa (si tienes el archivo en un CDN o servicio)
-            // window.location.href = 'https://tu-servicio-de-archivos.com/websupervisor-client.exe';
+            setTimeout(() => {
+                // REEMPLAZA 'TU-USUARIO' y 'TU-REPOSITORIO' con tus datos reales
+                const downloadUrl = 'https://github.com/TU-USUARIO/TU-REPOSITORIO/releases/download/v1.0.0/SafePlay.exe';
 
-            // Opción 2: Mostrar modal con instrucciones
-            alert('Por favor contacta a soporte@websupervisor.com para obtener el archivo de instalación.\n\nEn tu mensaje incluye:\n- Nombre de la organización\n- Número de equipos a instalar\n- Sistema operativo');
+                // Iniciar descarga
+                window.location.href = downloadUrl;
 
-            // Opción 3: Redireccionar a Google Drive, Dropbox, etc.
-            // window.open('https://drive.google.com/tu-archivo-compartido', '_blank');
+                // Restaurar botón después de un momento
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.opacity = '1';
+                }, 2000);
+            }, 800);
         });
     });
 </script>
