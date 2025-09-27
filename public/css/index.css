@@ -1,308 +1,473 @@
-/* ===== ESTILOS ESPECÍFICOS PARA LA PÁGINA DE DESCARGA ===== */
-
-.download-section {
-    padding: 120px 0 80px;
-    background: linear-gradient(135deg, #87CEEB 0%, #ffffff 50%, #87CEEB 100%);
-    min-height: 100vh;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.download-container {
-    max-width: 900px;
+html {
+    /* desplazamiento suave a anchors (#features, etc.) */
+    scroll-behavior: smooth;
+    /* altura de compensación para header fijo (ajústala si tu header cambia) */
+    --header-h: 100px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #87CEEB 0%, #ffffff 100%);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-.download-hero {
-    text-align: center;
-    margin-bottom: 4rem;
-}
-
-.download-hero h1 {
-    font-size: 3rem;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    animation: fadeInUp 1s ease forwards;
-}
-
-.download-hero p {
-    font-size: 1.2rem;
-    color: #5a6c7d;
-    max-width: 600px;
-    margin: 0 auto 2rem;
-    animation: fadeInUp 1s ease 0.2s forwards;
-    opacity: 0;
-}
-
-/* Contenedor para una sola tarjeta de descarga */
-.single-download-card {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 4rem;
-}
-
-.single-download-card .download-card {
-    max-width: 600px;
-    width: 100%;
-}
-
-.download-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 3rem;
-    margin-bottom: 4rem;
-}
-
-.download-card {
-    background: white;
-    padding: 3rem;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(135, 206, 235, 0.3);
-    text-align: center;
+/* Header */
+header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 1rem 0;
+    box-shadow: 0 2px 20px rgba(135, 206, 235, 0.3);
     transition: all 0.3s ease;
-    animation: fadeInUp 1s ease 0.4s forwards;
-    opacity: 0;
 }
 
-.download-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 25px 50px rgba(135, 206, 235, 0.4);
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.download-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
-    display: block;
-}
-
-.download-card h3 {
-    color: #4682B4;
+.logo {
     font-size: 1.8rem;
-    margin-bottom: 1rem;
-}
-
-.download-card p {
-    color: #6c757d;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-}
-
-.download-btn {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    color: white;
-    padding: 15px 30px;
-    border-radius: 25px;
+    font-weight: bold;
+    color: #87CEEB;
     text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 10px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-    font-size: 1.1rem;
 }
 
-.download-btn:hover {
+.logo::before {
+    content: '🛡️';
+    font-size: 2rem;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #87CEEB, #4682B4);
+    color: white;
+    box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #4682B4;
+    border: 2px solid #87CEEB;
+}
+
+/* Nuevo botón de descarga */
+.btn-download {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+}
+
+.btn-download:hover {
     background: linear-gradient(45deg, #218838, #1ba085);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
 }
 
-.download-btn.secondary {
-    background: linear-gradient(45deg, #6c757d, #495057);
+.download-icon {
+    font-size: 1.2rem;
+    animation: bounce 2s infinite;
 }
 
-.download-btn.secondary:hover {
-    background: linear-gradient(45deg, #495057, #343a40);
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-3px);
+    }
+    60% {
+        transform: translateY(-2px);
+    }
 }
 
-.file-info {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 1.5rem;
-    border-radius: 15px;
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(135, 206, 235, 0.5);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #4682B4, #87CEEB);
+}
+
+.btn-secondary:hover {
+    background: #87CEEB;
+    color: white;
+}
+
+/* Hero Section */
+.hero {
+    /* deja espacio arriba por el header fijo */
+    padding: 120px 0 80px;
+    text-align: center;
+    background: linear-gradient(135deg, #87CEEB 0%, #ffffff 50%, #87CEEB 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%2387CEEB" opacity="0.1"><polygon points="0,0 1000,100 1000,100 0,100"/></svg>');
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    opacity: 0;
+    animation: fadeInUp 1s ease forwards;
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    color: #5a6c7d;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.2s forwards;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
     margin-top: 2rem;
-    border-left: 4px solid #87CEEB;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.4s forwards;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
-.file-info h4 {
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Features Section */
+.features {
+    padding: 80px 0;
+    background: rgba(255, 255, 255, 0.9);
+
+    /* que el ancla no quede tapada por el header */
+    scroll-margin-top: var(--header-h);
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #2c3e50;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(135, 206, 235, 0.3);
+}
+
+.feature-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.feature-card h3 {
     color: #4682B4;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 
-.file-info ul {
+.feature-card p {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+/* User Types Section */
+.user-types {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+
+    /* por si enlazas a esta sección con #id */
+    scroll-margin-top: var(--header-h);
+}
+
+.user-types h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #2c3e50;
+}
+
+.user-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 3rem;
+}
+
+.user-card {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(135, 206, 235, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(135, 206, 235, 0.3);
+}
+
+.user-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.user-card h3 {
+    color: #4682B4;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-features {
     list-style: none;
-    padding: 0;
 }
 
-.file-info li {
+.user-features li {
     padding: 0.5rem 0;
     color: #5a6c7d;
     position: relative;
     padding-left: 1.5rem;
 }
 
-.file-info li::before {
-    content: '•';
+.user-features li::before {
+    content: '✓';
     position: absolute;
     left: 0;
     color: #87CEEB;
     font-weight: bold;
 }
 
-.requirements {
-    background: white;
-    padding: 3rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
-    margin-top: 3rem;
-    animation: fadeInUp 1s ease 0.6s forwards;
-    opacity: 0;
-}
-
-.requirements h3 {
-    color: #4682B4;
+/* Footer */
+footer {
+    background: #2c3e50;
+    color: white;
     text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
+    padding: 3rem 0;
 }
 
-.req-grid {
+.footer-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-.req-item {
+.footer-section h4 {
+    color: #87CEEB;
+    margin-bottom: 1rem;
+}
+
+.footer-bottom {
+    border-top: 1px solid #34495e;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    color: #95a5a6;
+}
+
+/* Loading states */
+.btn.loading {
+    opacity: 0.7;
+    transform: scale(0.98);
+    pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .user-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-download {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Scroll animations */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h2 {
     text-align: center;
-    padding: 1.5rem;
-    background: #f8f9fa;
+    color: #4682B4;
+}
+
+/* (estos estilos venían para formularios compartidos, los mantenemos) */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 2px solid #87CEEB;
     border-radius: 15px;
-    border: 2px solid transparent;
+    background: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.auth-form input,
+.auth-form select {
+    padding: 12px;
+    border: 2px solid #87CEEB;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
     transition: all 0.3s ease;
 }
 
-.req-item:hover {
-    border-color: #87CEEB;
-    transform: translateY(-3px);
+.auth-form input:focus,
+.auth-form select:focus {
+    border-color: #4682B4;
+    box-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
 }
 
-.req-item h4 {
-    color: #4682B4;
-    margin-bottom: 0.5rem;
+.auth-form button {
+    padding: 12px;
+    background: #4682B4;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-.req-item span {
-    font-size: 2rem;
-    display: block;
-    margin-bottom: 1rem;
+.auth-form button:hover {
+    background: #315f86;
 }
 
-.warning-box {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-    border: 2px solid #ffc107;
-    border-radius: 15px;
-    padding: 2rem;
-    margin: 3rem 0;
-    text-align: center;
-    animation: fadeInUp 1s ease 0.8s forwards;
-    opacity: 0;
-}
-
-.warning-box h4 {
-    color: #856404;
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-}
-
-.warning-box p {
-    color: #856404;
-    line-height: 1.6;
-}
-
-/* Estilos para instrucciones de instalación */
-.instructions-container {
-    text-align: left;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.instruction-step {
-    text-align: left;
-    margin-bottom: 1rem;
-}
-
-.instruction-step h4 {
-    color: #4682B4;
-    margin-bottom: 0.5rem;
-}
-
-.instruction-step p {
-    margin: 0;
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 768px) {
-    .download-hero h1 {
-        font-size: 2.2rem;
-    }
-
-    .download-cards {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .download-card {
-        padding: 2rem;
-    }
-
-    .req-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .download-container {
-        padding: 0 15px;
-    }
-
-    .download-btn {
-        font-size: 1rem;
-        padding: 12px 24px;
-    }
-
-    .download-icon {
-        font-size: 3rem;
-    }
-
-    .requirements {
-        padding: 2rem;
-    }
-
-    .warning-box {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .download-hero h1 {
-        font-size: 1.8rem;
-    }
-
-    .download-hero p {
-        font-size: 1rem;
-    }
-
-    .download-card {
-        padding: 1.5rem;
-    }
-
-    .download-card h3 {
-        font-size: 1.5rem;
-    }
-
-    .req-item {
-        padding: 1rem;
-    }
-
-    .req-item span {
-        font-size: 1.5rem;
-    }
+.logo-pequeno {
+    width: 150px;
+    height: auto;
 }

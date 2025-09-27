@@ -154,41 +154,6 @@
 </footer>
 
 <script src="/js/main.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Animar elementos cuando se cargan
-        const animatedElements = document.querySelectorAll('.download-card, .requirements, .warning-box');
-        animatedElements.forEach((element, index) => {
-            setTimeout(() => {
-                element.style.opacity = '1';
-            }, index * 200);
-        });
-
-        // Configurar descarga desde GitHub Releases
-        const mainDownloadBtn = document.getElementById('mainDownloadBtn');
-        mainDownloadBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            // Mostrar feedback al usuario
-            const originalText = this.innerHTML;
-            this.innerHTML = '<span>⏳</span> Iniciando descarga...';
-            this.style.opacity = '0.7';
-
-            setTimeout(() => {
-                // REEMPLAZA 'TU-USUARIO' y 'TU-REPOSITORIO' con tus datos reales
-                const downloadUrl = 'https://github.com/TU-USUARIO/TU-REPOSITORIO/releases/download/v1.0.0/SafePlay.exe';
-
-                // Iniciar descarga
-                window.location.href = downloadUrl;
-
-                // Restaurar botón después de un momento
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.style.opacity = '1';
-                }, 2000);
-            }, 800);
-        });
-    });
-</script>
+<script src="/js/download.js"></script>
 </body>
 </html>

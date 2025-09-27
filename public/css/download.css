@@ -33,6 +33,18 @@
     opacity: 0;
 }
 
+/* Contenedor para una sola tarjeta de descarga */
+.single-download-card {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4rem;
+}
+
+.single-download-card .download-card {
+    max-width: 600px;
+    width: 100%;
+}
+
 .download-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
