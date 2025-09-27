@@ -8,7 +8,12 @@ const Supervisor = sequelize.define('Supervisor', {
   passwordHash: { type: DataTypes.STRING(120), allowNull: false },
   fullName: { type: DataTypes.STRING(120), allowNull: false },
   phone: { type: DataTypes.STRING(30) },
-  acceptedTermsAt: { type: DataTypes.DATE }
+  acceptedTermsAt: { type: DataTypes.DATE },
+  emailVerified:   { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  verifyTokenHash: { type: DataTypes.STRING(128), allowNull: true },
+  verifyExpires:   { type: DataTypes.DATE, allowNull: true }
+  
+  
 }, {
   tableName: 'supervisors',
   timestamps: true

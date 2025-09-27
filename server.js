@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
       console.log(`🚀 Servidor iniciado en http://localhost:${PORT}`);
     });
   } catch (err) {
-    console.error('❌ Error al iniciar:', err.message);
+    console.error('❌ Error al iniciar:', err);
     process.exit(1);
   }
 })();
