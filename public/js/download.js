@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Configuración de descarga desde GitHub Releases
-    const DOWNLOAD_URL = 'https://github.com/JuanOicata/SafePlay_Web/releases/download/v1.0.0/SafePlay.exe';
+    const DOWNLOAD_URL = 'https://github.com/JuanOicata/SafePlay_Web/releases/download/v1.0.0/win-unpacked.zip';
 
     // Manejar el botón de descarga principal
     const mainDownloadBtn = document.getElementById('mainDownloadBtn');
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Función para copiar el enlace de descarga (funcionalidad extra)
 function copyDownloadLink() {
-    const downloadUrl = 'https://github.com/JuanOicata/SafePlay_Web/releases/download/v1.0.0/SafePlay.exe';
+    const downloadUrl = 'https://github.com/JuanOicata/SafePlay_Web/releases/download/v1.0.0/win-unpacked.zip';
 
     if (navigator.clipboard) {
         navigator.clipboard.writeText(downloadUrl).then(() => {
