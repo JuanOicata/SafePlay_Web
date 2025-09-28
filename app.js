@@ -1,3 +1,4 @@
+// app.js
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -7,41 +8,68 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    useDefaults: true,
-    directives: {
-      defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      connectSrc: ["'self'"],
-    }
-  }
-}));
+// Seguridad básica con Helmet (CSP ajustada para tu app estática + fetch a mismo origen)
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        connectSrc: ["'self'"], // permite fetch/XHR al mismo host
+      },
+    },
+  })
+);
 
-app.use(cors({ origin: process.env.PUBLIC_URL || '*', credentials: true }));
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+// CORS (si sirves front y back en el mismo dominio, esto es suficiente)
+app.use(
+  cors({
+    origin: process.env.PUBLIC_URL || '*',
+    credentials: true,
+  })
+);
 
+// Rate limiting básico
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  })
+);
+
+// Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rutas usando res.sendFile() para mantener consistencia
-app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/index.html')));
-app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/login.html')));
-app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/register.html')));
-app.get('/dashboard', (_req, res) => res.sendFile(path.join(__dirname, 'public/templates/dashboard.html')));
+// Páginas (sirve tus plantillas HTML)
+app.get('/', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/index.html'))
+);
+app.get('/login', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/login.html'))
+);
+app.get('/register', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/register.html'))
+);
+app.get('/dashboard', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/dashboard.html'))
+);
+app.get('/download', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/download.html'))
+);
 
-// Ruta de descarga corregida - usando res.sendFile() como las demás
-app.get('/download', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public/templates/download.html'));
-});
-
+// APIs
 app.use('/api/auth', require('./src/routes/auth'));
 app.use('/api', require('./src/routes/me'));
 
+// Catch-all → home
 app.use('*', (_req, res) => res.redirect('/'));
 
+// Export para server.js
 module.exports = app;
