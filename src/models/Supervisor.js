@@ -22,8 +22,12 @@ const Supervisor = sequelize.define('Supervisor', {
 
   acceptedTermsAt: { type: DataTypes.DATE, allowNull: true },
 
-  // Clave: por defecto TRUE para que no dependa de verificación por correo
-  emailVerified: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true }
+  // antes estaba true: ahora false
+  emailVerified: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+
+  // nuevos campos:
+  emailVerifyToken: { type: DataTypes.STRING(120), allowNull: true },
+  emailVerifyTokenExpires: { type: DataTypes.DATE, allowNull: true }
 }, {
   tableName: 'supervisors',
   timestamps: true

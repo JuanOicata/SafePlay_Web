@@ -11,11 +11,8 @@
   <nav class="container">
     <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno">
     <div class="nav-buttons">
-      <!-- IDs añadidos -->
-      <a id="btnLogin" href="/templates/index.html" class="btn btn-secondary">Inicio</a>
-      <a id="btnRegister" href="/templates/login.html" class="btn btn-primary">Iniciar Sesión</a>
-
-      <!-- Solo con sesión -->
+      <a id="btnHome" href="/templates/index.html" class="btn btn-secondary">Inicio</a>
+      <a id="btnLogin" href="/templates/login.html" class="btn btn-primary">Iniciar Sesión</a>
       <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
       <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
     </div>
@@ -28,22 +25,22 @@
       <h1>Crear Cuenta de Supervisor</h1>
       <p>Regístrate para obtener control completo sobre el acceso a juegos</p>
 
-      <form class="auth-form" id="registerForm">
+      <form class="auth-form" id="registerForm" novalidate>
         <h2>Nuevo Supervisor</h2>
 
-        <input type="text" id="username" name="username" placeholder="Nombre de usuario" required minlength="3">
-        <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
-        <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="6">
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required minlength="6">
-        <input type="text" id="fullName" name="fullName" placeholder="Nombre completo" required>
-        <input type="tel" id="phone" name="phone" placeholder="Teléfono (opcional)">
+        <input type="text" id="username" name="username" placeholder="Nombre de usuario" required minlength="3" autocomplete="username">
+        <input type="email" id="email" name="email" placeholder="Correo electrónico" required autocomplete="email">
+        <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="6" autocomplete="new-password">
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required minlength="6" autocomplete="new-password">
+        <input type="text" id="fullName" name="fullName" placeholder="Nombre completo" required autocomplete="name">
+        <input type="tel" id="phone" name="phone" placeholder="Teléfono (opcional)" autocomplete="tel">
 
         <div class="checkbox-group">
           <input type="checkbox" id="terms" name="terms" required>
-          <label for="terms">Acepto los <a href="#">términos y condiciones</a></label>
+          <label for="terms">Acepto los <a href="/templates/terminos.html" target="_blank" rel="noopener">términos y condiciones</a></label>
         </div>
 
-        <button type="submit" class="btn-register">Crear Cuenta</button>
+        <button type="submit" class="btn-register" id="btnRegisterSubmit">Crear Cuenta</button>
 
         <div class="auth-links">
           <p>¿Ya tienes cuenta? <a href="/templates/login.html">Inicia sesión aquí</a></p>
@@ -64,11 +61,11 @@
       </div>
       <div class="footer-section">
         <h4>Enlaces Rápidos</h4>
-        <p>Inicio • Características • Dashboard</p>
+        <p><a href="/templates/index.html">Inicio</a> • <a href="/templates/login.html">Iniciar sesión</a> • <a href="/dashboard">Dashboard</a></p>
       </div>
       <div class="footer-section">
         <h4>Contacto</h4>
-        <p>soporte@safeplay.com<br>+57 - 3224687627</p>
+        <p>soporte@safeeplay.com<br>+57 322 468 7627</p>
       </div>
     </div>
     <div class="footer-bottom">
