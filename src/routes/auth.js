@@ -16,8 +16,20 @@ const isEmail = (str = '') => /\S+@\S+\.\S+/.test(String(str).trim() || '');
 const now = () => new Date();
 const addMinutes = (d, m) => new Date(d.getTime() + m * 60000);
 
+// Helper: determina base URL dinámica
+function getBaseUrl(req) {
+  const envBase =
+    process.env.APP_BASE_URL ||
+    process.env.BASE_URL ||
+    process.env.PUBLIC_URL;
+  if (envBase) return envBase.replace(/\/+$/, ''); // sin slash final
+  const proto =
+    req.headers['x-forwarded-proto'] || req.protocol || 'https';
+  const host = req.get('host');
+  return `${proto}://${host}`;
+}
+
 // ========== REGISTRO ==========
-// Crea usuario con emailVerified=false, genera token y envía correo de verificación.
 router.post('/register', async (req, res) => {
   try {
     const { username, email, password, fullName, phone, terms } = req.body || {};
@@ -52,9 +64,7 @@ router.post('/register', async (req, res) => {
       emailVerifyTokenExpires
     });
 
-    const base =
-      process.env.BASE_URL ||
-      `${req.protocol}://${req.get('host')}`; // usa el host real del request si no hay BASE_URL
+    const base = getBaseUrl(req);
     const verifyUrl = `${base}/api/auth/verify?token=${encodeURIComponent(emailVerifyToken)}`;
 
     await sendVerificationEmail({ to: email, fullName, verifyUrl });
@@ -69,7 +79,6 @@ router.post('/register', async (req, res) => {
 });
 
 // ========== VERIFICAR CORREO ==========
-// Activa la cuenta cuando el usuario hace clic en el enlace del correo.
 router.get('/verify', async (req, res) => {
   try {
     const { token } = req.query;
@@ -87,7 +96,8 @@ router.get('/verify', async (req, res) => {
     sup.emailVerifyTokenExpires = null;
     await sup.save();
 
-    const redirectTo = (process.env.BASE_URL || 'http://localhost:3000') + '/?verified=1';
+    const base = getBaseUrl(req);
+    const redirectTo = `${base}/?verified=1`;
     return res.redirect(302, redirectTo);
   } catch (e) {
     console.error(e);
@@ -109,7 +119,7 @@ router.post('/resend-verification', async (req, res) => {
     sup.emailVerifyTokenExpires = addMinutes(now(), 60);
     await sup.save();
 
-    const base = process.env.BASE_URL || 'http://localhost:3000';
+    const base = getBaseUrl(req);
     const verifyUrl = `${base}/api/auth/verify?token=${encodeURIComponent(sup.emailVerifyToken)}`;
 
     await sendVerificationEmail({ to: sup.email, fullName: sup.fullName, verifyUrl });
@@ -122,7 +132,6 @@ router.post('/resend-verification', async (req, res) => {
 });
 
 // ========== LOGIN ==========
-// Bloquea inicio de sesión si el correo no está verificado.
 router.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body || {};
