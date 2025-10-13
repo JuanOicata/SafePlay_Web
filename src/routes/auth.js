@@ -52,7 +52,9 @@ router.post('/register', async (req, res) => {
       emailVerifyTokenExpires
     });
 
-    const base = process.env.BASE_URL || 'http://localhost:3000';
+    const base =
+      process.env.BASE_URL ||
+      `${req.protocol}://${req.get('host')}`; // usa el host real del request si no hay BASE_URL
     const verifyUrl = `${base}/api/auth/verify?token=${encodeURIComponent(emailVerifyToken)}`;
 
     await sendVerificationEmail({ to: email, fullName, verifyUrl });

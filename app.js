@@ -1,5 +1,7 @@
 // app.js
 const express = require('express');
+app.set('trust proxy', 1);
+
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
