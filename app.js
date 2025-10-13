@@ -1,6 +1,5 @@
 // app.js
 const express = require('express');
-app.set('trust proxy', 1);
 
 const cors = require('cors');
 const helmet = require('helmet');
@@ -9,6 +8,7 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Seguridad básica con Helmet (CSP ajustada para tu app estática + fetch a mismo origen)
 app.use(
