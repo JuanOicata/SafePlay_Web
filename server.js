@@ -1,15 +1,20 @@
 const app = require('./app');
 require('dotenv').config();
 const { sequelize, testConnection } = require('./src/config/database');
-require('./src/models');
+require('./src/models'); // registra modelos
 
 const PORT = process.env.PORT || 3000;
 
 (async () => {
   try {
     await testConnection();
-    await sequelize.sync({ alter: true });
-    console.log('🔄 Tablas sincronizadas');
+
+    // Controla el alter por variable de entorno (por defecto: false)
+    const alter =
+      String(process.env.DB_SYNC_ALTER || 'false').trim().toLowerCase() === 'true';
+
+    await sequelize.sync({ alter });
+    console.log(`🔄 Tablas sincronizadas (alter=${alter})`);
 
     app.listen(PORT, () => {
       console.log(`🚀 Servidor iniciado en http://localhost:${PORT}`);
