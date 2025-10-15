@@ -1,26 +1,32 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const dbUrl = process.env.DATABASE_URL?.trim();
-if (!dbUrl) {
-  console.error('❌ DATABASE_URL no está definida.');
-  throw new Error('DATABASE_URL is missing');
-}
+const dbUrl = process.env.DATABASE_URL;
 
-const mustUseSSL =
-  /render\.com/i.test(dbUrl) ||
-  dbUrl.includes('sslmode=require') ||
-  process.env.FORCE_DB_SSL === 'true';
+// Detecta si debe usar SSL (Render lo necesita)
+const mustUseSSL = dbUrl.includes('render.com');
 
 const sequelize = new Sequelize(dbUrl, {
   dialect: 'postgres',
-  dialectOptions: mustUseSSL ? { ssl: { require: true, rejectUnauthorized: false } } : {},
+  protocol: 'postgres',
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  pool: {
+    max: 10,
+    min: 0,
+    idle: 10000
+  },
+  dialectOptions: mustUseSSL
+    ? { ssl: { require: true, rejectUnauthorized: false } }
+    : {}
 });
 
 async function testConnection() {
-  await sequelize.authenticate();
-  console.log('✅ Conexión a PostgreSQL OK');
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Conexión a PostgreSQL OK');
+  } catch (error) {
+    console.error('❌ Error de conexión:', error);
+  }
 }
 
 module.exports = { sequelize, testConnection };

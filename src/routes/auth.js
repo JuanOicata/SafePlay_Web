@@ -1,157 +1,163 @@
+// src/routes/auth.js
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { Supervisor } = require('../models');
-const { generateVerifyToken, hashToken } = require('../utils/verify');
-const { sendVerificationEmail } = require('../utils/mailer');
+const { sendVerificationEmail } = require('../services/email');
 
+// === helpers ===
 const signToken = (payload) =>
   jwt.sign(payload, process.env.JWT_SECRET || 'secretito', {
     expiresIn: process.env.JWT_EXPIRE || '24h'
   });
 
-function ttlMs() {
-  const h = Number(process.env.EMAIL_TOKEN_TTL_HOURS || 24);
-  return h * 60 * 60 * 1000;
+const isEmail = (str = '') => /\S+@\S+\.\S+/.test(String(str).trim() || '');
+const now = () => new Date();
+const addMinutes = (d, m) => new Date(d.getTime() + m * 60000);
+
+// Helper: determina base URL dinámica
+function getBaseUrl(req) {
+  const envBase =
+    process.env.APP_BASE_URL ||
+    process.env.BASE_URL ||
+    process.env.PUBLIC_URL;
+  if (envBase) return envBase.replace(/\/+$/, ''); // sin slash final
+  const proto =
+    req.headers['x-forwarded-proto'] || req.protocol || 'https';
+  const host = req.get('host');
+  return `${proto}://${host}`;
 }
 
 // ========== REGISTRO ==========
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, fullName, phone, terms } = req.body;
-    if (!username || !email || !password || !fullName)
-      return res.status(400).json({ error: 'Faltan datos obligatorios' });
-    if (!terms)
-      return res.status(400).json({ error: 'Debes aceptar los términos' });
+    const { username, email, password, fullName, phone, terms } = req.body || {};
 
-    const dup = await Supervisor.findOne({ where: { email } });
-    if (dup) return res.status(400).json({ error: 'El correo ya está registrado' });
+    if (!username || !email || !password || !fullName) {
+      return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
+    if (!isEmail(email)) return res.status(400).json({ error: 'Correo inválido' });
+    if (!terms) return res.status(400).json({ error: 'Debes aceptar los términos' });
+
+    const dupEmail = await Supervisor.findOne({ where: { email } });
+    if (dupEmail) return res.status(409).json({ error: 'El correo ya está registrado' });
+
+    const dupUser = await Supervisor.findOne({ where: { username } });
+    if (dupUser) return res.status(409).json({ error: 'El nombre de usuario ya está registrado' });
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Generar token de verificación y guardar hash + expiración
-    const { token, hash } = generateVerifyToken();
-    const expires = new Date(Date.now() + ttlMs());
+    // token de verificación (válido 60 min)
+    const emailVerifyToken = crypto.randomBytes(32).toString('hex');
+    const emailVerifyTokenExpires = addMinutes(now(), 60);
 
-    // Crear usuario NO verificado
     const sup = await Supervisor.create({
-      username, email, passwordHash, fullName, phone,
-      acceptedTermsAt: new Date(),
+      username,
+      email,
+      passwordHash,
+      fullName,
+      phone: phone || null,
+      acceptedTermsAt: now(),
       emailVerified: false,
-      verifyTokenHash: hash,
-      verifyExpires: expires
+      emailVerifyToken,
+      emailVerifyTokenExpires
     });
 
-    const verifyUrl = `${process.env.APP_BASE_URL}/api/auth/verify?uid=${encodeURIComponent(sup.id)}&token=${token}`;
+    const base = getBaseUrl(req);
+    const verifyUrl = `${base}/api/auth/verify?token=${encodeURIComponent(emailVerifyToken)}`;
 
-    try {
-      await sendVerificationEmail(email, verifyUrl);
-    } catch (err) {
-      console.error('❌ Registro fallido: no se pudo enviar el correo');
-      // Si quieres evitar usuarios “colgados” cuando falla el email, borra el registro:
-      await Supervisor.destroy({ where: { id: sup.id } });
-      return res.status(502).json({ error: 'No se pudo enviar el correo de verificación. Intenta más tarde.' });
-    }
+    await sendVerificationEmail({ to: email, fullName, verifyUrl });
 
-    return res.json({ message: '✅ Registro exitoso. Revisa tu correo para verificar la cuenta.' });
+    return res.status(201).json({
+      message: 'Usuario creado. Revisa tu correo para verificar tu cuenta.'
+    });
   } catch (e) {
-    console.error('❌ Error en /register:', e);
-    res.status(500).json({ error: 'No se pudo registrar' });
+    console.error(e);
+    return res.status(500).json({ error: e.message });
   }
 });
 
 // ========== VERIFICAR CORREO ==========
 router.get('/verify', async (req, res) => {
   try {
-    const { uid, token } = req.query;
-    if (!uid || !token) return res.status(400).send('Link inválido');
+    const { token } = req.query;
+    if (!token) return res.status(400).send('Token faltante');
 
-    const sup = await Supervisor.findByPk(uid);
-    if (!sup) return res.status(404).send('Usuario no encontrado');
+    const sup = await Supervisor.findOne({ where: { emailVerifyToken: token } });
+    if (!sup) return res.status(400).send('Token inválido');
 
-    if (sup.emailVerified) {
-      return res.send('Tu correo ya estaba verificado. Ya puedes iniciar sesión.');
+    if (!sup.emailVerifyTokenExpires || sup.emailVerifyTokenExpires < now()) {
+      return res.status(400).send('Token expirado. Solicita reenviar verificación.');
     }
 
-    if (!sup.verifyTokenHash || !sup.verifyExpires) {
-      return res.status(400).send('Token no disponible');
-    }
+    sup.emailVerified = true;
+    sup.emailVerifyToken = null;
+    sup.emailVerifyTokenExpires = null;
+    await sup.save();
 
-    const incomingHash = hashToken(String(token));
-    if (incomingHash !== sup.verifyTokenHash) {
-      return res.status(400).send('Token inválido');
-    }
-
-    if (new Date(sup.verifyExpires) < new Date()) {
-      return res.status(400).send('Token expirado. Solicita un reenvío.');
-    }
-
-    await Supervisor.update(
-      { emailVerified: true, verifyTokenHash: null, verifyExpires: null },
-      { where: { id: sup.id } }
-    );
-
-    return res.send('✅ Correo verificado. Ya puedes iniciar sesión.');
+    const base = getBaseUrl(req);
+    const redirectTo = `${base}/?verified=1`;
+    return res.redirect(302, redirectTo);
   } catch (e) {
     console.error(e);
-    res.status(500).send('Error al verificar.');
+    return res.status(500).send('Error del servidor');
   }
 });
 
 // ========== REENVIAR VERIFICACIÓN ==========
 router.post('/resend-verification', async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: 'Correo requerido' });
+    const { email } = req.body || {};
+    if (!isEmail(email)) return res.status(400).json({ error: 'Correo inválido' });
 
     const sup = await Supervisor.findOne({ where: { email } });
-    if (!sup) return res.status(404).json({ error: 'No existe una cuenta con ese correo' });
-    if (sup.emailVerified) return res.json({ message: 'Tu correo ya está verificado' });
+    if (!sup) return res.status(404).json({ error: 'No existe un usuario con ese correo' });
+    if (sup.emailVerified) return res.status(400).json({ error: 'La cuenta ya está verificada' });
 
-    const { token, hash } = generateVerifyToken();
-    const expires = new Date(Date.now() + ttlMs());
+    sup.emailVerifyToken = crypto.randomBytes(32).toString('hex');
+    sup.emailVerifyTokenExpires = addMinutes(now(), 60);
+    await sup.save();
 
-    await Supervisor.update(
-      { verifyTokenHash: hash, verifyExpires: expires },
-      { where: { id: sup.id } }
-    );
+    const base = getBaseUrl(req);
+    const verifyUrl = `${base}/api/auth/verify?token=${encodeURIComponent(sup.emailVerifyToken)}`;
 
-    const verifyUrl = `${process.env.APP_BASE_URL}/api/auth/verify?uid=${encodeURIComponent(sup.id)}&token=${token}`;
-    await sendVerificationEmail(email, verifyUrl);
+    await sendVerificationEmail({ to: sup.email, fullName: sup.fullName, verifyUrl });
 
-    return res.json({ message: 'Te enviamos un nuevo correo de verificación' });
+    return res.json({ message: 'Correo de verificación reenviado' });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: 'No se pudo reenviar la verificación' });
+    return res.status(500).json({ error: e.message });
   }
 });
 
-// ========== LOGIN (bloquea si no verificó) ==========
+// ========== LOGIN ==========
 router.post('/login', async (req, res) => {
   try {
-    const { identifier, password } = req.body;
-    if (!identifier || !password)
+    const { identifier, password } = req.body || {};
+    if (!identifier || !password) {
       return res.status(400).json({ error: 'Faltan credenciales' });
+    }
 
-    const where = identifier.includes('@') ? { email: identifier } : { username: identifier };
+    const where = isEmail(identifier) ? { email: identifier } : { username: identifier };
     const sup = await Supervisor.findOne({ where });
-    if (!sup) return res.status(400).json({ error: 'Usuario/Email no registrado' });
+    if (!sup) return res.status(401).json({ error: 'Credenciales inválidas' });
 
-    const ok = await require('bcryptjs').compare(password, sup.passwordHash);
-    if (!ok) return res.status(401).json({ error: 'Contraseña incorrecta' });
+    const ok = await bcrypt.compare(password, sup.passwordHash);
+    if (!ok) return res.status(401).json({ error: 'Credenciales inválidas' });
 
     if (!sup.emailVerified) {
       return res.status(403).json({
-        error: 'Debes verificar tu correo antes de iniciar sesión.',
-        action: 'verify_required'
+        error: 'Debes verificar tu correo antes de iniciar sesión',
+        needVerification: true
       });
     }
 
     const token = signToken({ id: sup.id, username: sup.username });
-    res.json({ message: '✅ Login exitoso', token });
+    return res.json({ message: '✅ Login exitoso', token });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 });
 

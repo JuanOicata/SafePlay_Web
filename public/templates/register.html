@@ -11,11 +11,8 @@
   <nav class="container">
     <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno">
     <div class="nav-buttons">
-      <!-- IDs añadidos -->
-      <a id="btnLogin" href="/templates/index.html" class="btn btn-secondary">Inicio</a>
-      <a id="btnRegister" href="/templates/login.html" class="btn btn-primary">Iniciar Sesión</a>
-
-      <!-- Solo con sesión -->
+      <a id="btnHome" href="/templates/index.html" class="btn btn-secondary">Inicio</a>
+      <a id="btnLogin" href="/templates/login.html" class="btn btn-primary">Iniciar Sesión</a>
       <a id="btnDashboard" href="/dashboard" class="btn btn-primary" style="display:none">Ir al panel</a>
       <button id="btnLogout" class="btn btn-secondary" style="display:none">Cerrar sesión</button>
     </div>
@@ -28,22 +25,24 @@
       <h1>Crear Cuenta de Supervisor</h1>
       <p>Regístrate para obtener control completo sobre el acceso a juegos</p>
 
-      <form class="auth-form" id="registerForm">
+      <form class="auth-form" id="registerForm" novalidate>
         <h2>Nuevo Supervisor</h2>
 
-        <input type="text" id="username" name="username" placeholder="Nombre de usuario" required minlength="3">
-        <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
-        <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="6">
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required minlength="6">
-        <input type="text" id="fullName" name="fullName" placeholder="Nombre completo" required>
-        <input type="tel" id="phone" name="phone" placeholder="Teléfono (opcional)">
+        <input type="text" id="username" name="username" placeholder="Nombre de usuario" required minlength="3" autocomplete="username">
+        <input type="email" id="email" name="email" placeholder="Correo electrónico" required autocomplete="email">
+        <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="6" autocomplete="new-password">
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required minlength="6" autocomplete="new-password">
+        <input type="text" id="fullName" name="fullName" placeholder="Nombre completo" required autocomplete="name">
+        <input type="tel" id="phone" name="phone" placeholder="Teléfono (opcional)" autocomplete="tel">
 
         <div class="checkbox-group">
           <input type="checkbox" id="terms" name="terms" required>
-          <label for="terms">Acepto los <a href="#">términos y condiciones</a></label>
+          <label for="terms">Acepto los <a id="openTermsModal" href="#">términos y condiciones</a></label>
+
         </div>
 
-        <button type="submit" class="btn-register">Crear Cuenta</button>
+
+        <button type="submit" class="btn-register" id="btnRegisterSubmit">Crear Cuenta</button>
 
         <div class="auth-links">
           <p>¿Ya tienes cuenta? <a href="/templates/login.html">Inicia sesión aquí</a></p>
@@ -55,6 +54,137 @@
   </div>
 </section>
 
+<!-- Modal de Términos y Condiciones -->
+<div id="termsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Términos y Condiciones - SafePlay</h2>
+      <button class="close" id="closeModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Última actualización:</strong> Octubre 2025</p>
+
+      <h3>1. Aceptación de los Términos</h3>
+      <p>Al registrarse en SafePlay, usted acepta cumplir con estos términos y condiciones. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestros servicios.</p>
+
+      <h3>2. Descripción del Servicio</h3>
+      <p>SafePlay es una plataforma que permite a supervisores (padres, tutores o responsables) monitorear y controlar remotamente el acceso a videojuegos de menores bajo su supervisión.</p>
+
+      <h3>3. Política de Tratamiento de Datos Personales</h3>
+      <div class="highlight-box">
+        <p><strong>Conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013 de Colombia</strong></p>
+      </div>
+
+      <h3>4. Habeas Data y Autorización de Tratamiento de Datos</h3>
+      <p>SafePlay, en cumplimiento de la Ley 1581 de 2012 de Protección de Datos Personales de Colombia, informa:</p>
+
+      <p><strong>4.1 Responsable del Tratamiento:</strong></p>
+      <ul>
+        <li>Razón Social: SafePlay</li>
+        <li>Correo: soporte@safeeplay.com</li>
+        <li>Teléfono: +57 322 468 7627</li>
+      </ul>
+
+      <p><strong>4.2 Datos Recopilados:</strong></p>
+      <ul>
+        <li>Información de identificación: nombre completo, correo electrónico, teléfono</li>
+        <li>Información de cuenta: nombre de usuario, contraseña (encriptada)</li>
+        <li>Datos de uso de la plataforma y actividad de monitoreo</li>
+        <li>Información de los menores bajo supervisión (nombres, edad)</li>
+      </ul>
+
+      <p><strong>4.3 Finalidad del Tratamiento:</strong></p>
+      <ul>
+        <li>Crear y gestionar su cuenta de supervisor</li>
+        <li>Proveer servicios de monitoreo y control parental</li>
+        <li>Enviar notificaciones sobre actividad de los menores supervisados</li>
+        <li>Mejorar nuestros servicios y experiencia del usuario</li>
+        <li>Cumplir con obligaciones legales y reglamentarias</li>
+        <li>Comunicar información sobre actualizaciones del servicio</li>
+      </ul>
+
+      <p><strong>4.4 Derechos del Titular:</strong></p>
+      <p>Como titular de sus datos personales, usted tiene derecho a:</p>
+      <ul>
+        <li><strong>Conocer, actualizar y rectificar</strong> sus datos personales</li>
+        <li><strong>Solicitar prueba</strong> de la autorización otorgada</li>
+        <li><strong>Ser informado</strong> sobre el uso dado a sus datos</li>
+        <li><strong>Revocar la autorización</strong> y/o solicitar la supresión de datos cuando no exista obligación legal de conservarlos</li>
+        <li><strong>Acceder gratuitamente</strong> a sus datos personales</li>
+        <li><strong>Presentar quejas</strong> ante la Superintendencia de Industria y Comercio</li>
+      </ul>
+
+      <p><strong>4.5 Ejercicio de Derechos:</strong></p>
+      <p>Para ejercer sus derechos, puede contactarnos a través de:</p>
+      <ul>
+        <li>Correo electrónico: soporte@safeeplay.com</li>
+        <li>Teléfono: +57 322 468 7627</li>
+      </ul>
+      <p>Responderemos su solicitud en un plazo máximo de 15 días hábiles.</p>
+
+      <h3>5. Seguridad de la Información</h3>
+      <p>SafePlay implementa medidas de seguridad técnicas, administrativas y físicas para proteger sus datos personales contra acceso no autorizado, pérdida, alteración o destrucción.</p>
+
+      <h3>6. Compartir Información</h3>
+      <p>No compartimos, vendemos ni alquilamos sus datos personales a terceros, excepto:</p>
+      <ul>
+        <li>Cuando sea requerido por ley</li>
+        <li>Con proveedores de servicios que nos ayudan a operar la plataforma (bajo acuerdos de confidencialidad)</li>
+        <li>Con su consentimiento explícito</li>
+      </ul>
+
+      <h3>7. Responsabilidades del Usuario</h3>
+      <p>Como supervisor, usted se compromete a:</p>
+      <ul>
+        <li>Proporcionar información veraz y actualizada</li>
+        <li>Mantener la confidencialidad de su contraseña</li>
+        <li>Usar el servicio únicamente para fines legítimos de supervisión parental</li>
+        <li>Tener autorización legal para supervisar a los menores registrados</li>
+        <li>No utilizar el servicio para acosar, espiar o causar daño</li>
+      </ul>
+
+      <h3>8. Menores de Edad</h3>
+      <p>Los menores supervisados no deben crear cuentas propias. Solo los supervisores adultos (mayores de 18 años) pueden registrarse y agregar menores bajo su tutela legal.</p>
+
+      <h3>9. Modificaciones al Servicio</h3>
+      <p>SafePlay se reserva el derecho de modificar, suspender o discontinuar el servicio en cualquier momento, con previo aviso cuando sea posible.</p>
+
+      <h3>10. Modificaciones a los Términos</h3>
+      <p>Nos reservamos el derecho de actualizar estos términos. Le notificaremos sobre cambios significativos por correo electrónico o mediante un aviso en la plataforma.</p>
+
+      <h3>11. Limitación de Responsabilidad</h3>
+      <p>SafePlay proporciona herramientas de supervisión, pero no garantiza que impida completamente el acceso a contenido inapropiado. El supervisor es responsable final de la seguridad digital de los menores.</p>
+
+      <h3>12. Legislación Aplicable</h3>
+      <p>Estos términos se rigen por las leyes de la República de Colombia, especialmente:</p>
+      <ul>
+        <li>Ley 1581 de 2012 (Protección de Datos Personales)</li>
+        <li>Decreto 1377 de 2013</li>
+        <li>Ley 1273 de 2009 (Delitos Informáticos)</li>
+      </ul>
+
+      <h3>13. Contacto</h3>
+      <p>Para preguntas sobre estos términos o sobre el tratamiento de sus datos personales:</p>
+      <ul>
+        <li>Email: soporte@safeeplay.com</li>
+        <li>Teléfono: +57 322 468 7627</li>
+      </ul>
+
+      <div class="highlight-box">
+        <p><strong>DECLARACIÓN DE CONSENTIMIENTO:</strong></p>
+        <p>Al marcar la casilla de aceptación y crear su cuenta, usted declara que:</p>
+        <ul>
+          <li>Ha leído y comprendido estos términos y condiciones</li>
+          <li>Autoriza expresamente a SafePlay para el tratamiento de sus datos personales según la finalidad descrita</li>
+          <li>Comprende sus derechos como titular de datos personales</li>
+          <li>Es mayor de 18 años y tiene capacidad legal para aceptar estos términos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <footer>
   <div class="container">
     <div class="footer-content">
@@ -64,11 +194,11 @@
       </div>
       <div class="footer-section">
         <h4>Enlaces Rápidos</h4>
-        <p>Inicio • Características • Dashboard</p>
+        <p><a href="/templates/index.html">Inicio</a> • <a href="/templates/login.html">Iniciar sesión</a> • <a href="/dashboard">Dashboard</a></p>
       </div>
       <div class="footer-section">
         <h4>Contacto</h4>
-        <p>soporte@safeplay.com<br>+57 - 3224687627</p>
+        <p>soporte@safeeplay.com<br>+57 322 468 7627</p>
       </div>
     </div>
     <div class="footer-bottom">
@@ -78,6 +208,7 @@
 </footer>
 
 <script src="/js/auth.js"></script>
+<script src="/js/modal-terms.js"></script>
 <script src="/js/main.js" defer></script>
 </body>
 </html>

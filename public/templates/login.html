@@ -31,8 +31,21 @@
       <form class="auth-form" id="loginForm">
         <h2>Supervisor</h2>
 
-        <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
-        <input type="password" id="password" name="password" placeholder="Contraseña" required>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="Correo electrónico" 
+          required 
+          autocomplete="email">
+
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          placeholder="Contraseña" 
+          required 
+          autocomplete="current-password">
 
         <button type="submit" class="btn-login">Iniciar Sesión</button>
 
