@@ -18,8 +18,9 @@ app.use(
                 defaultSrc: ["'self'"],
                 imgSrc: ["'self'", "data:", "https:"],
                 styleSrc: ["'self'", "'unsafe-inline'"],
-                scriptSrc: ["'self'"],
-                connectSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+                scriptSrcAttr: ["'self'", "'unsafe-inline'"],
+                connectSrc: ["'self'", "https://safeeplay.com"],
             },
         },
     })
