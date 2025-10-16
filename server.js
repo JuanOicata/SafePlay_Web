@@ -3,7 +3,7 @@ require('dotenv').config();
 const { sequelize, testConnection } = require('./src/config/database');
 
 // Cargar modelos
-const CommandModel = require('./src/models/Command');
+const CommandModel = require('./src/models/command');
 const ActivityLogModel = require('./src/models/ActivityLog');
 CommandModel(sequelize);
 ActivityLogModel(sequelize);

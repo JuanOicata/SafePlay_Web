@@ -1,4 +1,4 @@
-// src/models/Command.js
+// src/models/command.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
