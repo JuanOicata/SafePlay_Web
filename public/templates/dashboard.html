@@ -1,4 +1,4 @@
-<!-- dashboard.html -->
+<!-- dashboard.html - Ajustado para funciones reales -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -92,13 +92,6 @@
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
-    .button-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
     button {
       padding: 10px 15px;
       border: none;
@@ -128,15 +121,6 @@
       background: #a01124;
     }
 
-    .btn-success {
-      background: #128a00;
-      color: white;
-    }
-
-    .btn-success:hover:not(:disabled) {
-      background: #0d6600;
-    }
-
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -156,6 +140,7 @@
       margin-bottom: 10px;
       background: #f8f9ff;
       border-radius: 3px;
+      font-size: 13px;
     }
 
     .activity-item.blocked {
@@ -170,39 +155,20 @@
       border-left-color: #ffa500;
     }
 
+    .activity-item.closed {
+      border-left-color: #999;
+    }
+
     .activity-time {
       font-size: 12px;
       color: #999;
+      margin-top: 5px;
     }
 
     .activity-action {
       font-weight: bold;
       color: #333;
       margin-bottom: 3px;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    .status-pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .status-executed {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-failed {
-      background: #f8d7da;
-      color: #721c24;
     }
 
     .full-width {
@@ -230,23 +196,11 @@
       display: block;
     }
 
-    .loading {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      background: #667eea;
-      border-radius: 50%;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
-    }
-
-    .commands-history {
-      max-height: 300px;
-      overflow-y: auto;
+    .message.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+      display: block;
     }
 
     .command-item {
@@ -260,10 +214,22 @@
 
     .command-item.executed {
       border-left-color: #128a00;
+      background: #f0f8f4;
     }
 
     .command-item.failed {
       border-left-color: #c5162a;
+      background: #fdf8f8;
+    }
+
+    .command-item.pending {
+      border-left-color: #ffa500;
+      background: #fffaf0;
+    }
+
+    .commands-history {
+      max-height: 300px;
+      overflow-y: auto;
     }
 
     .stat-card {
@@ -284,12 +250,33 @@
       font-size: 12px;
       opacity: 0.9;
     }
+
+    .game-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-badge {
+      background: #667eea;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .no-games {
+      color: #999;
+      font-style: italic;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>🎮 SafePlay - Panel de Control</h1>
+    <h1>SafePlay - Panel de Control</h1>
     <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
   </header>
 
@@ -298,67 +285,74 @@
   <div class="grid">
     <!-- BLOQUEAR JUEGO -->
     <div class="card">
-      <h2>🚫 Bloquear Juego</h2>
+      <h2>Bloquear Juego</h2>
       <div class="command-group">
-        <label for="blockGame">Nombre del juego a bloquear:</label>
-        <input type="text" id="blockGame" placeholder="ej: Elden Ring, Baldur's Gate 3">
-        <button class="btn-danger" onclick="blockGame()" id="blockBtn">Bloquear ahora</button>
+        <label for="blockGame">Nombre del juego:</label>
+        <input type="text" id="blockGame" placeholder="ej: Elden Ring">
+        <button class="btn-danger" onclick="blockGame()" id="blockBtn">Bloquear</button>
       </div>
-    </div>
-
-    <!-- DESBLOQUEAR JUEGO -->
-    <div class="card">
-      <h2>✅ Desbloquear Juego</h2>
-      <div class="command-group">
-        <label for="unblockGame">Nombre del juego a desbloquear:</label>
-        <input type="text" id="unblockGame" placeholder="ej: Elden Ring, Baldur's Gate 3">
-        <button class="btn-success" onclick="unblockGame()" id="unblockBtn">Desbloquear</button>
-      </div>
+      <p style="font-size: 12px; color: #999; margin-top: 10px;">
+        El juego se cerrará inmediatamente en el dispositivo
+      </p>
     </div>
 
     <!-- ESTABLECER CRONÓMETRO -->
     <div class="card">
-      <h2>⏱️ Establecer Cronómetro</h2>
+      <h2>Establecer Tiempo de Juego</h2>
       <div class="command-group">
         <label for="timerGame">Nombre del juego:</label>
         <input type="text" id="timerGame" placeholder="ej: Minecraft">
 
         <label for="timerMinutes">Minutos permitidos:</label>
-        <input type="number" id="timerMinutes" min="1" max="480" value="60" placeholder="60">
+        <input type="number" id="timerMinutes" min="1" max="480" value="60">
 
         <button class="btn-primary" onclick="setTimer()" id="timerBtn">Establecer timer</button>
       </div>
+      <p style="font-size: 12px; color: #999; margin-top: 10px;">
+        El juego se cerrará automáticamente cuando se agote el tiempo
+      </p>
+    </div>
+
+    <!-- JUEGOS ACTIVOS -->
+    <div class="card">
+      <h2>Juegos Detectados</h2>
+      <div class="game-list" id="gamesList">
+        <p class="no-games">Sin juegos activos</p>
+      </div>
+      <button class="btn-primary" onclick="refreshGames()" style="width: 100%; margin-top: 10px;">
+        Actualizar
+      </button>
     </div>
 
     <!-- ESTADÍSTICAS -->
     <div class="card">
-      <h2>📊 Estado</h2>
-      <div class="stat-card">
-        <div class="stat-number" id="statsJuegos">0</div>
-        <div class="stat-label">Juegos monitoreados</div>
-      </div>
+      <h2>Estado del Supervisor</h2>
       <div class="stat-card">
         <div class="stat-number" id="statsComandos">0</div>
         <div class="stat-label">Comandos pendientes</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statsEjecutados">0</div>
+        <div class="stat-label">Comandos ejecutados</div>
+      </div>
       <button class="btn-primary" onclick="refreshStatus()" style="width: 100%; margin-top: 10px;">
-        🔄 Actualizar estado
+        Actualizar estado
       </button>
     </div>
 
     <!-- HISTORIAL DE COMANDOS -->
     <div class="card full-width">
-      <h2>📜 Historial de Comandos</h2>
+      <h2>Historial de Comandos</h2>
       <div class="commands-history" id="commandsHistory">
-        <p style="color: #999; text-align: center;">Cargando comandos...</p>
+        <p style="color: #999; text-align: center;">Cargando...</p>
       </div>
     </div>
 
     <!-- ACTIVIDAD EN VIVO -->
     <div class="card full-width">
-      <h2>📹 Actividad en Vivo</h2>
+      <h2>Actividad en Vivo</h2>
       <div class="activity-log" id="activityLog">
-        <p style="color: #999; text-align: center;">Sin actividad registrada</p>
+        <p style="color: #999; text-align: center;">Sin actividad</p>
       </div>
     </div>
   </div>
@@ -372,15 +366,13 @@
     location.href = '/login.html';
   }
 
-  // ==================== FUNCIONES AUXILIARES ====================
-
-  function showMessage(text, isSuccess = true) {
+  function showMessage(text, type = 'success') {
     const msg = document.getElementById('message');
     msg.textContent = text;
-    msg.className = `message ${isSuccess ? 'success' : 'error'}`;
+    msg.className = `message ${type}`;
     setTimeout(() => {
       msg.className = 'message';
-    }, 4000);
+    }, 5000);
   }
 
   function getHeaders() {
@@ -391,26 +383,32 @@
   }
 
   async function apiCall(method, endpoint, body = null) {
-    const opts = {
-      method,
-      headers: getHeaders()
-    };
-    if (body) opts.body = JSON.stringify(body);
+    try {
+      const opts = {
+        method,
+        headers: getHeaders()
+      };
+      if (body) opts.body = JSON.stringify(body);
 
-    const res = await fetch(`${API_BASE}${endpoint}`, opts);
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Error HTTP ${res.status}`);
+      const res = await fetch(`${API_BASE}${endpoint}`, opts);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || `Error HTTP ${res.status}`);
+      }
+      return data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
     }
-    return res.json();
   }
 
-  // ==================== FUNCIONES DE CONTROL ====================
+  // ==================== CONTROLES ====================
 
   async function blockGame() {
     const gameName = document.getElementById('blockGame').value.trim();
     if (!gameName) {
-      showMessage('Por favor ingresa el nombre del juego', false);
+      showMessage('Ingresa el nombre del juego', 'error');
       return;
     }
 
@@ -422,36 +420,11 @@
         action: 'block',
         target: gameName
       });
-      showMessage(`✅ Comando enviado: bloquear ${gameName}`);
+      showMessage(`Comando enviado: ${gameName} será bloqueado`);
       document.getElementById('blockGame').value = '';
       loadCommandsHistory();
     } catch (error) {
-      showMessage(`❌ ${error.message}`, false);
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
-  async function unblockGame() {
-    const gameName = document.getElementById('unblockGame').value.trim();
-    if (!gameName) {
-      showMessage('Por favor ingresa el nombre del juego', false);
-      return;
-    }
-
-    const btn = document.getElementById('unblockBtn');
-    btn.disabled = true;
-
-    try {
-      await apiCall('POST', '/commands', {
-        action: 'unblock',
-        target: gameName
-      });
-      showMessage(`✅ Comando enviado: desbloquear ${gameName}`);
-      document.getElementById('unblockGame').value = '';
-      loadCommandsHistory();
-    } catch (error) {
-      showMessage(`❌ ${error.message}`, false);
+      showMessage(`Error: ${error.message}`, 'error');
     } finally {
       btn.disabled = false;
     }
@@ -462,7 +435,7 @@
     const minutes = parseInt(document.getElementById('timerMinutes').value);
 
     if (!gameName || !minutes || minutes < 1) {
-      showMessage('Por favor completa todos los campos correctamente', false);
+      showMessage('Completa todos los campos correctamente', 'error');
       return;
     }
 
@@ -475,58 +448,86 @@
         target: gameName,
         duration: minutes
       });
-      showMessage(`✅ Comando enviado: ${minutes} min para ${gameName}`);
+      showMessage(`Timer: ${minutes} minutos para ${gameName}`);
       document.getElementById('timerGame').value = '';
       document.getElementById('timerMinutes').value = '60';
       loadCommandsHistory();
     } catch (error) {
-      showMessage(`❌ ${error.message}`, false);
+      showMessage(`Error: ${error.message}`, 'error');
     } finally {
       btn.disabled = false;
     }
   }
 
-  async function refreshStatus() {
+  async function refreshGames() {
     try {
-      await apiCall('POST', '/commands', {
-        action: 'get_status'
-      });
-      showMessage('✅ Estado solicitado');
-      loadCommandsHistory();
+      const data = await apiCall('GET', '/activity?limit=100');
+      const games = new Map();
+
+      if (data.logs) {
+        data.logs.forEach(log => {
+          if (log.action === 'started' || log.action === 'timer_set') {
+            games.set(log.gameName, true);
+          }
+        });
+      }
+
+      const gamesList = document.getElementById('gamesList');
+      if (games.size === 0) {
+        gamesList.innerHTML = '<p class="no-games">Sin juegos activos</p>';
+      } else {
+        gamesList.innerHTML = Array.from(games.keys())
+                .map(name => `<div class="game-badge">${name}</div>`)
+                .join('');
+      }
     } catch (error) {
-      showMessage(`❌ ${error.message}`, false);
+      console.error('Error cargando juegos:', error);
     }
   }
 
-  // ==================== CARGAR DATOS ====================
+  async function refreshStatus() {
+    try {
+      const data = await apiCall('GET', '/commands/history?limit=100');
+      const pending = data.commands.filter(c => c.status === 'pending').length;
+      const executed = data.commands.filter(c => c.status === 'executed').length;
+
+      document.getElementById('statsComandos').textContent = pending;
+      document.getElementById('statsEjecutados').textContent = executed;
+
+      showMessage('Estado actualizado', 'info');
+    } catch (error) {
+      showMessage(`Error: ${error.message}`, 'error');
+    }
+  }
 
   async function loadCommandsHistory() {
     try {
       const data = await apiCall('GET', '/commands/history?limit=20');
-      const container = document.getElementById('commandsHistory');
 
+      const container = document.getElementById('commandsHistory');
       if (!data.commands || data.commands.length === 0) {
-        container.innerHTML = '<p style="color: #999; text-align: center;">Sin comandos aún</p>';
+        container.innerHTML = '<p style="color: #999; text-align: center;">Sin comandos</p>';
         return;
       }
 
       container.innerHTML = data.commands.map(cmd => {
         const date = new Date(cmd.createdAt);
         const timeStr = date.toLocaleTimeString('es-ES');
-        const statusClass = `status-${cmd.status}`;
+        const actionText = cmd.action === 'block' ? 'Bloquear' :
+                cmd.action === 'set_timer' ? 'Timer' : cmd.action;
 
         return `
                         <div class="command-item ${cmd.status}">
-                            <strong>${cmd.action}</strong> - ${cmd.target || 'N/A'}
+                            <strong>${actionText}</strong> - ${cmd.target || 'N/A'}
                             ${cmd.duration ? ` (${cmd.duration} min)` : ''}
                             <br>
-                            <small>${timeStr} • <span class="status-badge ${statusClass}">${cmd.status}</span></small>
+                            <small>${timeStr} • ${cmd.status}</small>
                         </div>
                     `;
       }).join('');
 
-      // Actualizar estadística
-      document.getElementById('statsComandos').textContent = data.commands.filter(c => c.status === 'pending').length;
+      const pending = data.commands.filter(c => c.status === 'pending').length;
+      document.getElementById('statsComandos').textContent = pending;
     } catch (error) {
       console.error('Error cargando historial:', error);
     }
@@ -535,10 +536,10 @@
   async function loadActivity() {
     try {
       const data = await apiCall('GET', '/activity?limit=30');
-      const container = document.getElementById('activityLog');
 
+      const container = document.getElementById('activityLog');
       if (!data.logs || data.logs.length === 0) {
-        container.innerHTML = '<p style="color: #999; text-align: center;">Sin actividad aún</p>';
+        container.innerHTML = '<p style="color: #999; text-align: center;">Sin actividad</p>';
         return;
       }
 
@@ -547,40 +548,39 @@
         const timeStr = date.toLocaleTimeString('es-ES');
         let icon = '📱';
 
-        if (log.action === 'blocked') icon = '🚫';
-        if (log.action === 'started') icon = '▶️';
-        if (log.action === 'timer_set') icon = '⏱️';
-        if (log.action === 'closed') icon = '⏹️';
+        if (log.action === 'blocked') icon = 'Bloqueado';
+        if (log.action === 'started') icon = 'Iniciado';
+        if (log.action === 'timer_set') icon = 'Timer';
+        if (log.action === 'closed') icon = 'Cerrado';
 
         return `
                         <div class="activity-item ${log.action}">
-                            <div class="activity-action">${icon} ${log.gameName}</div>
-                            <small>${log.action} • ${timeStr}</small>
+                            <div class="activity-action">${icon}: ${log.gameName}</div>
+                            <div class="activity-time">${timeStr}</div>
                         </div>
                     `;
       }).join('');
-
-      document.getElementById('statsJuegos').textContent = new Set(data.logs.map(l => l.gameName)).size;
     } catch (error) {
       console.error('Error cargando actividad:', error);
     }
   }
 
-  async function logout() {
+  function logout() {
     localStorage.removeItem('token');
     location.href = '/login.html';
   }
 
-  // ==================== INICIALIZACIÓN ====================
-
+  // Inicialización
   document.addEventListener('DOMContentLoaded', () => {
     loadCommandsHistory();
     loadActivity();
+    refreshGames();
+    refreshStatus();
 
-    // Recargar cada 5 segundos
     setInterval(() => {
       loadCommandsHistory();
       loadActivity();
+      refreshGames();
     }, 5000);
   });
 </script>

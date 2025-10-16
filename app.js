@@ -7,6 +7,15 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
+const cors = require('cors');
+
+app.use(cors({
+    origin: '*', // Permitir desde cualquier lugar (para desarrollo)
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 const app = express();
 app.set('trust proxy', 1);
 

@@ -3,6 +3,9 @@ require('dotenv').config();
 const { sequelize, testConnection } = require('./src/config/database');
 require('./src/models'); // registra modelos
 
+const electronRoutes = require('./src/routes/electron');
+app.use('/api/electron', electronRoutes);
+
 const PORT = process.env.PORT || 3000;
 
 (async () => {
