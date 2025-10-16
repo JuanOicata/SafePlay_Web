@@ -4,7 +4,7 @@ const { sequelize, testConnection } = require('./src/config/database');
 
 // Cargar modelos
 const CommandModel = require('./src/models/command');
-const ActivityLogModel = require('./src/models/ActivityLog');
+const ActivityLogModel = require('./src/models/activityLog');
 CommandModel(sequelize);
 ActivityLogModel(sequelize);
 
