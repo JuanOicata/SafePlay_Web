@@ -1,47 +1,44 @@
 // app.js
 const express = require('express');
-
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
-
-
 const app = express();
 app.set('trust proxy', 1);
 
-// Seguridad básica con Helmet (CSP ajustada para tu app estática + fetch a mismo origen)
+// Seguridad
 app.use(
-  helmet({
-    contentSecurityPolicy: {
-      useDefaults: true,
-      directives: {
-        defaultSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        connectSrc: ["'self'"], // permite fetch/XHR al mismo host
-      },
-    },
-  })
+    helmet({
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                defaultSrc: ["'self'"],
+                imgSrc: ["'self'", "data:", "https:"],
+                styleSrc: ["'self'", "'unsafe-inline'"],
+                scriptSrc: ["'self'"],
+                connectSrc: ["'self'"],
+            },
+        },
+    })
 );
 
-// CORS (si sirves front y back en el mismo dominio, esto es suficiente)
+// CORS
 app.use(
-  cors({
-    origin: process.env.PUBLIC_URL || '*',
-    credentials: true,
-  })
+    cors({
+        origin: process.env.PUBLIC_URL || '*',
+        credentials: true,
+    })
 );
 
-// Rate limiting básico
+// Rate limiting
 app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-  })
+    rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 100,
+    })
 );
 
 // Parsers
@@ -51,29 +48,34 @@ app.use(express.urlencoded({ extended: true }));
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Páginas (sirve tus plantillas HTML)
-app.get('/', (_req, res) =>
-  res.sendFile(path.join(__dirname, 'public/templates/index.html'))
-);
-app.get('/login', (_req, res) =>
-  res.sendFile(path.join(__dirname, 'public/templates/login.html'))
-);
-app.get('/register', (_req, res) =>
-  res.sendFile(path.join(__dirname, 'public/templates/register.html'))
-);
-app.get('/dashboard', (_req, res) =>
-  res.sendFile(path.join(__dirname, 'public/templates/dashboard.html'))
-);
-app.get('/download', (_req, res) =>
-  res.sendFile(path.join(__dirname, 'public/templates/download.html'))
-);
+// ========== REGISTRAR RUTAS DE API AQUÍ (ANTES del catch-all) ==========
 
-// APIs
+// Rutas de autenticación y usuario
 app.use('/api/auth', require('./src/routes/auth'));
 app.use('/api', require('./src/routes/me'));
 
-// Catch-all → home
+// Rutas para control remoto del ejecutable
+app.use('/api/electron', require('./src/routes/electron.routes'));
+
+// ========== PÁGINAS HTML (DESPUÉS de las APIs) ==========
+
+app.get('/', (_req, res) =>
+    res.sendFile(path.join(__dirname, 'public/templates/index.html'))
+);
+app.get('/login', (_req, res) =>
+    res.sendFile(path.join(__dirname, 'public/templates/login.html'))
+);
+app.get('/register', (_req, res) =>
+    res.sendFile(path.join(__dirname, 'public/templates/register.html'))
+);
+app.get('/dashboard', (_req, res) =>
+    res.sendFile(path.join(__dirname, 'public/templates/dashboard.html'))
+);
+app.get('/download', (_req, res) =>
+    res.sendFile(path.join(__dirname, 'public/templates/download.html'))
+);
+
+// ========== CATCH-ALL (AL FINAL) ==========
 app.use('*', (_req, res) => res.redirect('/'));
 
-// Export para server.js
 module.exports = app;
