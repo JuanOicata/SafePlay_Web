@@ -8,7 +8,6 @@ const ActivityLogModel = require('./src/models/activityLog');
 CommandModel(sequelize);
 ActivityLogModel(sequelize);
 
-// Rutas
 const electronRoutes = require('./src/routes/electron.routes');
 app.use('/api/electron', electronRoutes);
 

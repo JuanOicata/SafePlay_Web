@@ -5,8 +5,8 @@ const { authenticateToken } = require('../middlewares/authMiddleware');
 const { sequelize } = require('../config/database');
 
 // Inicializar modelos (ajusta la ruta según tu estructura)
-const CommandModel = require('../models/Command');
-const ActivityLogModel = require('../models/ActivityLog');
+const CommandModel = require('../models/command');
+const ActivityLogModel = require('../models/activityLog');
 const Command = CommandModel(sequelize);
 const ActivityLog = ActivityLogModel(sequelize);
 
