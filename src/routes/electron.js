@@ -5,8 +5,10 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 const { sequelize } = require('../config/database');
 
 // Inicializar modelos (ajusta la ruta según tu estructura)
-const Command = require('../models/Command')(sequelize);
-const ActivityLog = require('../models/ActivityLog')(sequelize);
+const CommandModel = require('../models/Command');
+const ActivityLogModel = require('../models/ActivityLog');
+const Command = CommandModel(sequelize);
+const ActivityLog = ActivityLogModel(sequelize);
 
 // ==================== ENDPOINTS PARA ELECTRON ====================
 

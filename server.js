@@ -1,7 +1,12 @@
 const app = require('./app');
 require('dotenv').config();
 const { sequelize, testConnection } = require('./src/config/database');
-require('./src/models'); // registra modelos
+
+// Cargar modelos correctamente
+const CommandModel = require('./src/models/Command');
+const ActivityLogModel = require('./src/models/ActivityLog');
+const Command = CommandModel(sequelize);
+const ActivityLog = ActivityLogModel(sequelize);
 
 const electronRoutes = require('./src/routes/electron');
 app.use('/api/electron', electronRoutes);
@@ -12,10 +17,7 @@ const PORT = process.env.PORT || 3000;
   try {
     await testConnection();
 
-    // Controla el alter por variable de entorno (por defecto: false)
-    const alter =
-      String(process.env.DB_SYNC_ALTER || 'false').trim().toLowerCase() === 'true';
-
+    const alter = String(process.env.DB_SYNC_ALTER || 'false').trim().toLowerCase() === 'true';
     await sequelize.sync({ alter });
     console.log(`🔄 Tablas sincronizadas (alter=${alter})`);
 

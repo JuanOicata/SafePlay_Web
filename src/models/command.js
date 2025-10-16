@@ -1,4 +1,4 @@
-// models/Command.js
+// src/models/Command.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -15,19 +15,19 @@ module.exports = (sequelize) => {
         },
         action: {
             type: DataTypes.ENUM(
-                'block',      // Bloquear juego inmediatamente
-                'unblock',    // Desbloquear juego
-                'set_timer',  // Establecer cronómetro
-                'get_status'  // Solicitar estado actual
+                'block',
+                'unblock',
+                'set_timer',
+                'get_status'
             ),
             allowNull: false
         },
         target: {
-            type: DataTypes.STRING(255), // Nombre del juego/app
+            type: DataTypes.STRING(255),
             allowNull: true
         },
         duration: {
-            type: DataTypes.INTEGER, // Minutos para el timer
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         status: {
@@ -46,7 +46,7 @@ module.exports = (sequelize) => {
         }
     }, {
         tableName: 'commands',
-        timestamps: true, // createdAt, updatedAt
+        timestamps: true,
         underscored: true
     });
 

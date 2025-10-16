@@ -1,4 +1,4 @@
-// models/ActivityLog.js
+// src/models/ActivityLog.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -10,20 +10,37 @@ module.exports = (sequelize) => {
         },
         userId: {
             type: DataTypes.INTEGER,
+            allowNull: false,
+            field: 'user_id'
+        },
+        gameName: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+            field: 'game_name'
+        },
+        action: {
+            type: DataTypes.ENUM(
+                'started',
+                'closed',
+                'blocked',
+                'timer_set'
+            ),
             allowNull: false
         },
-        appName: {
-            type: DataTypes.STRING,
-            allowNull: false
+        duration: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         },
-        usageTime: {
-            type: DataTypes.INTEGER, // segundos
-            defaultValue: 0
-        },
-        timestamp: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+        details: {
+            type: DataTypes.JSONB,
+            allowNull: true,
+            defaultValue: {}
         }
+    }, {
+        tableName: 'activity_logs',
+        timestamps: true,
+        underscored: true
     });
+
     return ActivityLog;
 };
