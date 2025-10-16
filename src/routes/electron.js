@@ -1,7 +1,7 @@
 // routes/electron.routes.js
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/authMiddleware');
+const { authenticateToken } = require('../middlewares/authMiddleware');
 const { sequelize } = require('../config/database');
 
 // Inicializar modelos (ajusta la ruta según tu estructura)
