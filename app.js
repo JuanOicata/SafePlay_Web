@@ -34,13 +34,24 @@ app.use(
     })
 );
 
-// Rate limiting
-app.use(
-    rateLimit({
-        windowMs: 15 * 60 * 1000,
-        max: 100,
-    })
-);
+// Rate limiting - Genérico para páginas
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: false,
+    legacyHeaders: false,
+});
+
+// Rate limiting - Más permisivo para APIs
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+    standardHeaders: false,
+    legacyHeaders: false,
+});
+
+app.use(generalLimiter);
+app.use('/api', apiLimiter);
 
 // Parsers
 app.use(express.json());
