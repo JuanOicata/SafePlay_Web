@@ -8,9 +8,6 @@ const ActivityLogModel = require('./src/models/activityLog');
 CommandModel(sequelize);
 ActivityLogModel(sequelize);
 
-const electronRoutes = require('./src/routes/electron.routes');
-app.use('/api/electron', electronRoutes);
-
 const PORT = process.env.PORT || 3000;
 
 (async () => {
