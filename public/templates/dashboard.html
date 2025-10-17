@@ -1,589 +1,105 @@
-<!-- dashboard.html - Ajustado para funciones reales -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SafePlay - Panel de Control</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    header {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 { color: #667eea; font-size: 24px; }
-
-    .logout-btn {
-      background: #c5162a;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .logout-btn:hover { background: #a01124; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    .card h2 {
-      color: #333;
-      margin-bottom: 15px;
-      font-size: 18px;
-      border-bottom: 2px solid #667eea;
-      padding-bottom: 10px;
-    }
-
-    .command-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .command-group label {
-      font-weight: bold;
-      color: #555;
-      font-size: 14px;
-    }
-
-    input, select {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-
-    .btn-primary {
-      background: #667eea;
-      color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: #5568d3;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-danger {
-      background: #c5162a;
-      color: white;
-    }
-
-    .btn-danger:hover:not(:disabled) {
-      background: #a01124;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .activity-log {
-      max-height: 400px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 10px;
-    }
-
-    .activity-item {
-      padding: 10px;
-      border-left: 4px solid #667eea;
-      margin-bottom: 10px;
-      background: #f8f9ff;
-      border-radius: 3px;
-      font-size: 13px;
-    }
-
-    .activity-item.blocked {
-      border-left-color: #c5162a;
-    }
-
-    .activity-item.started {
-      border-left-color: #128a00;
-    }
-
-    .activity-item.timer {
-      border-left-color: #ffa500;
-    }
-
-    .activity-item.closed {
-      border-left-color: #999;
-    }
-
-    .activity-time {
-      font-size: 12px;
-      color: #999;
-      margin-top: 5px;
-    }
-
-    .activity-action {
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 3px;
-    }
-
-    .full-width {
-      grid-column: 1 / -1;
-    }
-
-    .message {
-      padding: 12px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    .message.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      display: block;
-    }
-
-    .message.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      display: block;
-    }
-
-    .message.info {
-      background: #d1ecf1;
-      color: #0c5460;
-      border: 1px solid #bee5eb;
-      display: block;
-    }
-
-    .command-item {
-      padding: 8px;
-      margin-bottom: 8px;
-      background: #f8f9ff;
-      border-left: 3px solid #667eea;
-      border-radius: 3px;
-      font-size: 13px;
-    }
-
-    .command-item.executed {
-      border-left-color: #128a00;
-      background: #f0f8f4;
-    }
-
-    .command-item.failed {
-      border-left-color: #c5162a;
-      background: #fdf8f8;
-    }
-
-    .command-item.pending {
-      border-left-color: #ffa500;
-      background: #fffaf0;
-    }
-
-    .commands-history {
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-
-    .stat-number {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-
-    .game-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .game-badge {
-      background: #667eea;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .no-games {
-      color: #999;
-      font-style: italic;
-      font-size: 13px;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>SafePlay - Panel de Control</h1>
+<!-- Header fijo -->
+<header>
+  <div class="header-content">
+    <a href="/" class="logo">
+      <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno" />
+      <span class="logo-text">SafePlay</span>
+    </a>
+    <h1>Panel de Control del Supervisor</h1>
     <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
-  </header>
+  </div>
+</header>
 
-  <div id="message" class="message"></div>
+<div class="dashboard-content">
+  <div class="container">
+    <div id="message" class="message"></div>
 
-  <div class="grid">
-    <!-- BLOQUEAR JUEGO -->
-    <div class="card">
-      <h2>Bloquear Juego</h2>
-      <div class="command-group">
-        <label for="blockGame">Nombre del juego:</label>
-        <input type="text" id="blockGame" placeholder="ej: Elden Ring">
-        <button class="btn-danger" onclick="blockGame()" id="blockBtn">Bloquear</button>
+    <div class="grid">
+      <!-- BLOQUEAR JUEGO -->
+      <div class="card">
+        <h2>🚫 Bloquear Juego</h2>
+        <div class="command-group">
+          <label for="blockGame">Nombre del juego:</label>
+          <input type="text" id="blockGame" placeholder="ej: Elden Ring">
+          <button class="btn-danger" onclick="blockGame()" id="blockBtn">Bloquear Juego</button>
+        </div>
+        <p class="card-info">
+          ℹ️ El juego se cerrará inmediatamente en el dispositivo del jugador
+        </p>
       </div>
-      <p style="font-size: 12px; color: #999; margin-top: 10px;">
-        El juego se cerrará inmediatamente en el dispositivo
-      </p>
-    </div>
 
-    <!-- ESTABLECER CRONÓMETRO -->
-    <div class="card">
-      <h2>Establecer Tiempo de Juego</h2>
-      <div class="command-group">
-        <label for="timerGame">Nombre del juego:</label>
-        <input type="text" id="timerGame" placeholder="ej: Minecraft">
+      <!-- ESTABLECER CRONÓMETRO -->
+      <div class="card">
+        <h2>⏱️ Establecer Tiempo de Juego</h2>
+        <div class="command-group">
+          <label for="timerGame">Nombre del juego:</label>
+          <input type="text" id="timerGame" placeholder="ej: Minecraft">
 
-        <label for="timerMinutes">Minutos permitidos:</label>
-        <input type="number" id="timerMinutes" min="1" max="480" value="60">
+          <label for="timerMinutes">Minutos permitidos:</label>
+          <input type="number" id="timerMinutes" min="1" max="480" value="60">
 
-        <button class="btn-primary" onclick="setTimer()" id="timerBtn">Establecer timer</button>
+          <button class="btn-primary" onclick="setTimer()" id="timerBtn">Establecer Timer</button>
+        </div>
+        <p class="card-info">
+          ℹ️ El juego se cerrará automáticamente cuando se agote el tiempo
+        </p>
       </div>
-      <p style="font-size: 12px; color: #999; margin-top: 10px;">
-        El juego se cerrará automáticamente cuando se agote el tiempo
-      </p>
-    </div>
 
-    <!-- JUEGOS ACTIVOS -->
-    <div class="card">
-      <h2>Juegos Detectados</h2>
-      <div class="game-list" id="gamesList">
-        <p class="no-games">Sin juegos activos</p>
+      <!-- JUEGOS ACTIVOS -->
+      <div class="card">
+        <h2>🎮 Juegos Detectados</h2>
+        <div class="game-list" id="gamesList">
+          <p class="no-games">Sin juegos activos</p>
+        </div>
+        <button class="btn-primary" onclick="refreshGames()" style="width: 100%; margin-top: 15px;">
+          🔄 Actualizar Lista
+        </button>
       </div>
-      <button class="btn-primary" onclick="refreshGames()" style="width: 100%; margin-top: 10px;">
-        Actualizar
-      </button>
-    </div>
 
-    <!-- ESTADÍSTICAS -->
-    <div class="card">
-      <h2>Estado del Supervisor</h2>
-      <div class="stat-card">
-        <div class="stat-number" id="statsComandos">0</div>
-        <div class="stat-label">Comandos pendientes</div>
+      <!-- ESTADÍSTICAS -->
+      <div class="card">
+        <h2>📊 Estado del Supervisor</h2>
+        <div class="stat-card">
+          <div class="stat-number" id="statsComandos">0</div>
+          <div class="stat-label">Comandos pendientes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statsEjecutados">0</div>
+          <div class="stat-label">Comandos ejecutados</div>
+        </div>
+        <button class="btn-primary" onclick="refreshStatus()" style="width: 100%; margin-top: 10px;">
+          🔄 Actualizar Estado
+        </button>
       </div>
-      <div class="stat-card">
-        <div class="stat-number" id="statsEjecutados">0</div>
-        <div class="stat-label">Comandos ejecutados</div>
-      </div>
-      <button class="btn-primary" onclick="refreshStatus()" style="width: 100%; margin-top: 10px;">
-        Actualizar estado
-      </button>
-    </div>
 
-    <!-- HISTORIAL DE COMANDOS -->
-    <div class="card full-width">
-      <h2>Historial de Comandos</h2>
-      <div class="commands-history" id="commandsHistory">
-        <p style="color: #999; text-align: center;">Cargando...</p>
+      <!-- HISTORIAL DE COMANDOS -->
+      <div class="card full-width">
+        <h2>📋 Historial de Comandos</h2>
+        <div class="commands-history" id="commandsHistory">
+          <p style="color: #999; text-align: center;">Cargando...</p>
+        </div>
       </div>
-    </div>
 
-    <!-- ACTIVIDAD EN VIVO -->
-    <div class="card full-width">
-      <h2>Actividad en Vivo</h2>
-      <div class="activity-log" id="activityLog">
-        <p style="color: #999; text-align: center;">Sin actividad</p>
+      <!-- ACTIVIDAD EN VIVO -->
+      <div class="card full-width">
+        <h2>📡 Actividad en Vivo</h2>
+        <div class="activity-log" id="activityLog">
+          <p style="color: #999; text-align: center;">Sin actividad</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-  const API_BASE = '/api/electron';
-  let token = localStorage.getItem('token');
-
-  if (!token) {
-    location.href = '/login.html';
-  }
-
-  function showMessage(text, type = 'success') {
-    const msg = document.getElementById('message');
-    msg.textContent = text;
-    msg.className = `message ${type}`;
-    setTimeout(() => {
-      msg.className = 'message';
-    }, 5000);
-  }
-
-  function getHeaders() {
-    return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
-  }
-
-  async function apiCall(method, endpoint, body = null) {
-    try {
-      const opts = {
-        method,
-        headers: getHeaders()
-      };
-      if (body) opts.body = JSON.stringify(body);
-
-      const res = await fetch(`${API_BASE}${endpoint}`, opts);
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new Error(data.error || `Error HTTP ${res.status}`);
-      }
-      return data;
-    } catch (error) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  }
-
-  // ==================== CONTROLES ====================
-
-  async function blockGame() {
-    const gameName = document.getElementById('blockGame').value.trim();
-    if (!gameName) {
-      showMessage('Ingresa el nombre del juego', 'error');
-      return;
-    }
-
-    const btn = document.getElementById('blockBtn');
-    btn.disabled = true;
-
-    try {
-      await apiCall('POST', '/commands', {
-        action: 'block',
-        target: gameName
-      });
-      showMessage(`Comando enviado: ${gameName} será bloqueado`);
-      document.getElementById('blockGame').value = '';
-      loadCommandsHistory();
-    } catch (error) {
-      showMessage(`Error: ${error.message}`, 'error');
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
-  async function setTimer() {
-    const gameName = document.getElementById('timerGame').value.trim();
-    const minutes = parseInt(document.getElementById('timerMinutes').value);
-
-    if (!gameName || !minutes || minutes < 1) {
-      showMessage('Completa todos los campos correctamente', 'error');
-      return;
-    }
-
-    const btn = document.getElementById('timerBtn');
-    btn.disabled = true;
-
-    try {
-      await apiCall('POST', '/commands', {
-        action: 'set_timer',
-        target: gameName,
-        duration: minutes
-      });
-      showMessage(`Timer: ${minutes} minutos para ${gameName}`);
-      document.getElementById('timerGame').value = '';
-      document.getElementById('timerMinutes').value = '60';
-      loadCommandsHistory();
-    } catch (error) {
-      showMessage(`Error: ${error.message}`, 'error');
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
-  async function refreshGames() {
-    try {
-      const data = await apiCall('GET', '/activity?limit=100');
-      const games = new Map();
-
-      if (data.logs) {
-        data.logs.forEach(log => {
-          if (log.action === 'started' || log.action === 'timer_set') {
-            games.set(log.gameName, true);
-          }
-        });
-      }
-
-      const gamesList = document.getElementById('gamesList');
-      if (games.size === 0) {
-        gamesList.innerHTML = '<p class="no-games">Sin juegos activos</p>';
-      } else {
-        gamesList.innerHTML = Array.from(games.keys())
-                .map(name => `<div class="game-badge">${name}</div>`)
-                .join('');
-      }
-    } catch (error) {
-      console.error('Error cargando juegos:', error);
-    }
-  }
-
-  async function refreshStatus() {
-    try {
-      const data = await apiCall('GET', '/commands/history?limit=100');
-      const pending = data.commands.filter(c => c.status === 'pending').length;
-      const executed = data.commands.filter(c => c.status === 'executed').length;
-
-      document.getElementById('statsComandos').textContent = pending;
-      document.getElementById('statsEjecutados').textContent = executed;
-
-      showMessage('Estado actualizado', 'info');
-    } catch (error) {
-      showMessage(`Error: ${error.message}`, 'error');
-    }
-  }
-
-  async function loadCommandsHistory() {
-    try {
-      const data = await apiCall('GET', '/commands/history?limit=20');
-
-      const container = document.getElementById('commandsHistory');
-      if (!data.commands || data.commands.length === 0) {
-        container.innerHTML = '<p style="color: #999; text-align: center;">Sin comandos</p>';
-        return;
-      }
-
-      container.innerHTML = data.commands.map(cmd => {
-        const date = new Date(cmd.createdAt);
-        const timeStr = date.toLocaleTimeString('es-ES');
-        const actionText = cmd.action === 'block' ? 'Bloquear' :
-                cmd.action === 'set_timer' ? 'Timer' : cmd.action;
-
-        return `
-                        <div class="command-item ${cmd.status}">
-                            <strong>${actionText}</strong> - ${cmd.target || 'N/A'}
-                            ${cmd.duration ? ` (${cmd.duration} min)` : ''}
-                            <br>
-                            <small>${timeStr} • ${cmd.status}</small>
-                        </div>
-                    `;
-      }).join('');
-
-      const pending = data.commands.filter(c => c.status === 'pending').length;
-      document.getElementById('statsComandos').textContent = pending;
-    } catch (error) {
-      console.error('Error cargando historial:', error);
-    }
-  }
-
-  async function loadActivity() {
-    try {
-      const data = await apiCall('GET', '/activity?limit=30');
-
-      const container = document.getElementById('activityLog');
-      if (!data.logs || data.logs.length === 0) {
-        container.innerHTML = '<p style="color: #999; text-align: center;">Sin actividad</p>';
-        return;
-      }
-
-      container.innerHTML = data.logs.map(log => {
-        const date = new Date(log.createdAt);
-        const timeStr = date.toLocaleTimeString('es-ES');
-        let icon = '📱';
-
-        if (log.action === 'blocked') icon = 'Bloqueado';
-        if (log.action === 'started') icon = 'Iniciado';
-        if (log.action === 'timer_set') icon = 'Timer';
-        if (log.action === 'closed') icon = 'Cerrado';
-
-        return `
-                        <div class="activity-item ${log.action}">
-                            <div class="activity-action">${icon}: ${log.gameName}</div>
-                            <div class="activity-time">${timeStr}</div>
-                        </div>
-                    `;
-      }).join('');
-    } catch (error) {
-      console.error('Error cargando actividad:', error);
-    }
-  }
-
-  function logout() {
-    localStorage.removeItem('token');
-    location.href = '/login.html';
-  }
-
-  // Inicialización
-  document.addEventListener('DOMContentLoaded', () => {
-    loadCommandsHistory();
-    loadActivity();
-    refreshGames();
-    refreshStatus();
-
-    // CAMBIO: Aumentar intervalo a 10 segundos para reducir peticiones
-    setInterval(() => {
-      loadCommandsHistory();
-      loadActivity();
-      refreshGames();
-    }, 10000);  // Cambiar de 5000 a 10000
-  });
-</script>
+<script src="/js/dashboard.js"></script>
 </body>
 </html>
