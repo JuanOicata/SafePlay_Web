@@ -467,7 +467,46 @@ h2 {
     background: #315f86;
 }
 
+/* Ajustes para el logo */
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #87CEEB;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease;
+}
+
+/* Removemos el emoji para usar solo la imagen */
+.logo::before {
+    content: '';
+    /* Eliminamos el emoji para que solo se vea la imagen */
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
 .logo-pequeno {
-    width: 150px;
+    width: 180px;
     height: auto;
+    transition: all 0.3s ease;
+    /* Agregamos un filtro para que se vea mejor */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.logo:hover .logo-pequeno {
+    filter: drop-shadow(0 4px 8px rgba(135, 206, 235, 0.4));
+}
+
+/* Opción alternativa: Si quieres agregar texto junto al logo */
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #87CEEB, #4682B4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
