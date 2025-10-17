@@ -1,26 +1,488 @@
+<!-- dashboard.html - Con estilos consistentes -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SafePlay - Panel de Control</title>
-  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      --header-h: 100px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #87CEEB 0%, #ffffff 100%);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      box-shadow: 0 2px 20px rgba(135, 206, 235, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #87CEEB;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #87CEEB, #4682B4);
+      color: white;
+      box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(45deg, #4682B4, #87CEEB);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(135, 206, 235, 0.5);
+    }
+
+    .btn-danger {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      color: white;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+    }
+
+    .btn-danger:hover {
+      background: linear-gradient(45deg, #c0392b, #e74c3c);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
+    }
+
+    .btn-logout {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      color: white;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding-top: 120px;
+      padding-bottom: 80px;
+    }
+
+    .header-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .header-title h1 {
+      font-size: 2.5rem;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-title p {
+      font-size: 1.1rem;
+      color: #5a6c7d;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(135, 206, 235, 0.3);
+    }
+
+    .card h2 {
+      color: #4682B4;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .command-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .command-group label {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 0.95rem;
+    }
+
+    input, select {
+      padding: 12px;
+      border: 2px solid #87CEEB;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #4682B4;
+      box-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
+    }
+
+    input::placeholder {
+      color: #95a5a6;
+    }
+
+    .button-action {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    /* Message */
+    .message {
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.success {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+
+    .message.error {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+
+    .message.info {
+      background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+      display: block;
+    }
+
+    /* Activity Log */
+    .activity-log, .commands-history {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 2px solid #87CEEB;
+      border-radius: 10px;
+      padding: 1rem;
+      background: #f8f9fa;
+    }
+
+    .activity-item, .command-item {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: white;
+      border-left: 4px solid #87CEEB;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .activity-item:hover, .command-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .activity-item.blocked, .command-item.failed {
+      border-left-color: #e74c3c;
+    }
+
+    .activity-item.started {
+      border-left-color: #27ae60;
+    }
+
+    .activity-item.timer, .command-item.pending {
+      border-left-color: #f39c12;
+    }
+
+    .activity-item.closed {
+      border-left-color: #95a5a6;
+    }
+
+    .command-item.executed {
+      border-left-color: #27ae60;
+    }
+
+    .activity-action {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .activity-time {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+
+    /* Stats */
+    .stat-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+      color: white;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(135, 206, 235, 0.3);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    /* Games List */
+    .game-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .game-badge {
+      background: linear-gradient(45deg, #87CEEB, #4682B4);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(135, 206, 235, 0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .no-games {
+      color: #95a5a6;
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+
+    /* Full width */
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* Footer */
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 0.8rem 0;
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+
+      .nav-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .header-title h1 {
+        font-size: 1.8rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+
+      .activity-log, .commands-history {
+        max-height: 300px;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #87CEEB;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4682B4;
+    }
+  </style>
 </head>
 <body>
-<!-- Header fijo -->
 <header>
-  <div class="header-content">
-    <a href="/" class="logo">
-      <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno" />
-      <span class="logo-text"></span>
-    </a>
-    <h1>Panel de Control del Supervisor</h1>
-    <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
-  </div>
+  <nav class="container">
+    <a href="/" class="logo">SafePlay Control</a>
+    <div class="nav-buttons">
+      <button class="btn btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </nav>
 </header>
 
-<div class="dashboard-content">
+<div class="main-content">
   <div class="container">
+    <div class="header-title">
+      <h1>Panel de Control 🎮</h1>
+      <p>Supervisa y controla los juegos remotamente</p>
+    </div>
+
     <div id="message" class="message"></div>
 
     <div class="grid">
@@ -30,27 +492,25 @@
         <div class="command-group">
           <label for="blockGame">Nombre del juego:</label>
           <input type="text" id="blockGame" placeholder="ej: Elden Ring">
-          <button class="btn-danger" onclick="blockGame()" id="blockBtn">Bloquear Juego</button>
+          <button class="button-action btn-danger" onclick="blockGame()" id="blockBtn">Bloquear</button>
         </div>
-        <p class="card-info">
-          ℹ️ El juego se cerrará inmediatamente en el dispositivo del jugador
+        <p style="font-size: 0.9rem; color: #7f8c8d; margin-top: 1rem;">
+          ⚠️ El juego se cerrará inmediatamente
         </p>
       </div>
 
       <!-- ESTABLECER CRONÓMETRO -->
       <div class="card">
-        <h2>⏱️ Establecer Tiempo de Juego</h2>
+        <h2>⏱️ Tiempo de Juego</h2>
         <div class="command-group">
           <label for="timerGame">Nombre del juego:</label>
           <input type="text" id="timerGame" placeholder="ej: Minecraft">
-
           <label for="timerMinutes">Minutos permitidos:</label>
           <input type="number" id="timerMinutes" min="1" max="480" value="60">
-
-          <button class="btn-primary" onclick="setTimer()" id="timerBtn">Establecer Timer</button>
+          <button class="button-action btn-primary" onclick="setTimer()" id="timerBtn">Establecer</button>
         </div>
-        <p class="card-info">
-          ℹ️ El juego se cerrará automáticamente cuando se agote el tiempo
+        <p style="font-size: 0.9rem; color: #7f8c8d; margin-top: 1rem;">
+          ⏰ Se cerrará automáticamente
         </p>
       </div>
 
@@ -60,46 +520,245 @@
         <div class="game-list" id="gamesList">
           <p class="no-games">Sin juegos activos</p>
         </div>
-        <button class="btn-primary" onclick="refreshGames()" style="width: 100%; margin-top: 15px;">
-          🔄 Actualizar Lista
+        <button class="button-action btn-primary" onclick="refreshGames()" style="margin-top: 1rem;">
+          Actualizar
         </button>
       </div>
 
       <!-- ESTADÍSTICAS -->
       <div class="card">
-        <h2>📊 Estado del Supervisor</h2>
+        <h2>📊 Estado</h2>
         <div class="stat-card">
           <div class="stat-number" id="statsComandos">0</div>
-          <div class="stat-label">Comandos pendientes</div>
+          <div class="stat-label">Pendientes</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="statsEjecutados">0</div>
-          <div class="stat-label">Comandos ejecutados</div>
+          <div class="stat-label">Ejecutados</div>
         </div>
-        <button class="btn-primary" onclick="refreshStatus()" style="width: 100%; margin-top: 10px;">
-          🔄 Actualizar Estado
+        <button class="button-action btn-primary" onclick="refreshStatus()" style="margin-top: 1rem;">
+          Actualizar
         </button>
       </div>
 
       <!-- HISTORIAL DE COMANDOS -->
       <div class="card full-width">
-        <h2>📋 Historial de Comandos</h2>
+        <h2>📜 Historial de Comandos</h2>
         <div class="commands-history" id="commandsHistory">
-          <p style="color: #999; text-align: center;">Cargando...</p>
+          <p style="color: #95a5a6; text-align: center;">Cargando...</p>
         </div>
       </div>
 
       <!-- ACTIVIDAD EN VIVO -->
       <div class="card full-width">
-        <h2>📡 Actividad en Vivo</h2>
+        <h2>📹 Actividad en Vivo</h2>
         <div class="activity-log" id="activityLog">
-          <p style="color: #999; text-align: center;">Sin actividad</p>
+          <p style="color: #95a5a6; text-align: center;">Sin actividad</p>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<script src="/js/dashboard.js"></script>
+<footer>
+  <p>&copy; 2024 SafePlay. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+  const API_BASE = '/api/electron';
+  let token = localStorage.getItem('token');
+
+  if (!token) {
+    location.href = '/login.html';
+  }
+
+  function showMessage(text, type = 'success') {
+    const msg = document.getElementById('message');
+    msg.textContent = text;
+    msg.className = `message ${type}`;
+    setTimeout(() => {
+      msg.className = 'message';
+    }, 5000);
+  }
+
+  function getHeaders() {
+    return {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+  }
+
+  async function apiCall(method, endpoint, body = null) {
+    try {
+      const opts = { method, headers: getHeaders() };
+      if (body) opts.body = JSON.stringify(body);
+
+      const res = await fetch(`${API_BASE}${endpoint}`, opts);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || `Error HTTP ${res.status}`);
+      }
+      return data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  }
+
+  async function blockGame() {
+    const gameName = document.getElementById('blockGame').value.trim();
+    if (!gameName) {
+      showMessage('Ingresa el nombre del juego', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('blockBtn');
+    btn.disabled = true;
+
+    try {
+      await apiCall('POST', '/commands', { action: 'block', target: gameName });
+      showMessage(`✅ ${gameName} será bloqueado`);
+      document.getElementById('blockGame').value = '';
+      loadCommandsHistory();
+    } catch (error) {
+      showMessage(`❌ ${error.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function setTimer() {
+    const gameName = document.getElementById('timerGame').value.trim();
+    const minutes = parseInt(document.getElementById('timerMinutes').value);
+
+    if (!gameName || !minutes || minutes < 1) {
+      showMessage('Completa todos los campos', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('timerBtn');
+    btn.disabled = true;
+
+    try {
+      await apiCall('POST', '/commands', { action: 'set_timer', target: gameName, duration: minutes });
+      showMessage(`✅ Timer: ${minutes}min para ${gameName}`);
+      document.getElementById('timerGame').value = '';
+      loadCommandsHistory();
+    } catch (error) {
+      showMessage(`❌ ${error.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function refreshGames() {
+    try {
+      const data = await apiCall('GET', '/activity?limit=100');
+      const games = new Map();
+
+      if (data.logs) {
+        data.logs.forEach(log => {
+          if (log.action === 'started' || log.action === 'timer_set') {
+            games.set(log.gameName, true);
+          }
+        });
+      }
+
+      const gamesList = document.getElementById('gamesList');
+      gamesList.innerHTML = games.size === 0
+              ? '<p class="no-games">Sin juegos activos</p>'
+              : Array.from(games.keys()).map(name => `<div class="game-badge">${name}</div>`).join('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  async function refreshStatus() {
+    try {
+      const data = await apiCall('GET', '/commands/history?limit=100');
+      document.getElementById('statsComandos').textContent = data.commands.filter(c => c.status === 'pending').length;
+      document.getElementById('statsEjecutados').textContent = data.commands.filter(c => c.status === 'executed').length;
+      showMessage('✅ Estado actualizado', 'info');
+    } catch (error) {
+      showMessage(`❌ ${error.message}`, 'error');
+    }
+  }
+
+  async function loadCommandsHistory() {
+    try {
+      const data = await apiCall('GET', '/commands/history?limit=20');
+      const container = document.getElementById('commandsHistory');
+
+      if (!data.commands?.length) {
+        container.innerHTML = '<p style="color: #95a5a6; text-align: center;">Sin comandos</p>';
+        return;
+      }
+
+      container.innerHTML = data.commands.map(cmd => {
+        const date = new Date(cmd.createdAt);
+        const timeStr = date.toLocaleTimeString('es-ES');
+        const actionText = { block: 'Bloquear', set_timer: 'Timer' }[cmd.action] || cmd.action;
+
+        return `
+          <div class="command-item ${cmd.status}">
+            <div class="activity-action">${actionText} - ${cmd.target || 'N/A'}</div>
+            <div style="color: #7f8c8d; font-size: 0.9rem;">${cmd.duration ? `${cmd.duration} min` : ''}</div>
+            <div class="activity-time">${timeStr} • ${cmd.status}</div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('statsComandos').textContent = data.commands.filter(c => c.status === 'pending').length;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  async function loadActivity() {
+    try {
+      const data = await apiCall('GET', '/activity?limit=30');
+      const container = document.getElementById('activityLog');
+
+      if (!data.logs?.length) {
+        container.innerHTML = '<p style="color: #95a5a6; text-align: center;">Sin actividad</p>';
+        return;
+      }
+
+      container.innerHTML = data.logs.map(log => {
+        const date = new Date(log.createdAt);
+        const timeStr = date.toLocaleTimeString('es-ES');
+        const actionMap = { blocked: '🚫 Bloqueado', started: '▶️ Iniciado', timer_set: '⏱️ Timer', closed: '⏹️ Cerrado' };
+
+        return `
+          <div class="activity-item ${log.action}">
+            <div class="activity-action">${actionMap[log.action] || log.action}: ${log.gameName}</div>
+            <div class="activity-time">${timeStr}</div>
+          </div>
+        `;
+      }).join('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    location.href = '/login.html';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadCommandsHistory();
+    loadActivity();
+    refreshGames();
+    refreshStatus();
+
+    setInterval(() => {
+      loadCommandsHistory();
+      loadActivity();
+      refreshGames();
+    }, 10000);
+  });
+</script>
 </body>
 </html>
