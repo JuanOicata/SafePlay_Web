@@ -577,11 +577,12 @@
     refreshGames();
     refreshStatus();
 
+    // CAMBIO: Aumentar intervalo a 10 segundos para reducir peticiones
     setInterval(() => {
       loadCommandsHistory();
       loadActivity();
       refreshGames();
-    }, 5000);
+    }, 10000);  // Cambiar de 5000 a 10000
   });
 </script>
 </body>
