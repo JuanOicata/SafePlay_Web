@@ -14,10 +14,12 @@ const Supervisor = sequelize.define('Supervisor', {
     validate: { isEmail: true }
   },
 
-  // contraseña hasheada con bcrypt
-  password: { type: DataTypes.STRING(200), allowNull: false },
+  passwordHash: { type: DataTypes.STRING(120), allowNull: false },
 
-  // términos/condiciones aceptados
+  fullName: { type: DataTypes.STRING(120), allowNull: false },
+
+  phone: { type: DataTypes.STRING(30), allowNull: true },
+
   acceptedTermsAt: { type: DataTypes.DATE, allowNull: true },
 
   // verificación de correo
@@ -25,9 +27,9 @@ const Supervisor = sequelize.define('Supervisor', {
   emailVerifyToken: { type: DataTypes.STRING(120), allowNull: true },
   emailVerifyTokenExpires: { type: DataTypes.DATE, allowNull: true },
 
-  // recuperación de contraseña
-  resetPasswordToken: { type: DataTypes.STRING(120), allowNull: true },
-  resetPasswordExpires: { type: DataTypes.DATE, allowNull: true }
+  // restablecimiento de contraseña
+  passwordResetToken: { type: DataTypes.STRING(120), allowNull: true },
+  passwordResetExpires: { type: DataTypes.DATE, allowNull: true }
 }, {
   tableName: 'supervisors',
   timestamps: true

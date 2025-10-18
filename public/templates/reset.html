@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crear nueva contraseña - SafePlay</title>
+  <link rel="stylesheet" href="/css/login.css" />
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">
+        <img src="/images/logo1.png" alt="SafePlay" class="logo-pequeno"/>
+      </a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Nueva contraseña</h1>
+        <p>Escribe tu nueva contraseña para finalizar el cambio.</p>
+
+        <form class="auth-form" id="resetForm">
+          <h2>Supervisor</h2>
+          <input type="password" id="password" name="password" placeholder="Nueva contraseña" required autocomplete="new-password" />
+          <input type="password" id="confirm" name="confirm" placeholder="Confirmar contraseña" required autocomplete="new-password" />
+          <button type="submit" class="btn btn-primary" id="btnReset">Actualizar</button>
+          <p id="message" style="display:none;margin-top:10px"></p>
+          <div style="margin-top:12px">
+            <a href="/login">Ir a iniciar sesión</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script src="/js/reset.js"></script>
+</body>
+</html>

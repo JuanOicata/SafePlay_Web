@@ -72,6 +72,13 @@ app.use('/api', require('./src/routes/me'));
 
 // Catch-all → home
 app.use('*', (_req, res) => res.redirect('/'));
+app.get('/forgot', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/forgot.html'))
+);
+app.get('/reset', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public/templates/reset.html'))
+);
+
 
 // Export para server.js
 module.exports = app;
