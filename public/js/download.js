@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Configuración de descarga desde GitHub Releases
-    const DOWNLOAD_URL = 'https://github.com/JuanOicata/SafePlay_Web/releases/download/v1.0.0/win-unpacked.zip';
+    const DOWNLOAD_URL = 'https://github.com/JuanOicata/SafePlay_Web/releases/tag/v1.0.0';
 
     // Manejar el botón de descarga principal
     const mainDownloadBtn = document.getElementById('mainDownloadBtn');
