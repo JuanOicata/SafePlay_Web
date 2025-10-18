@@ -14,20 +14,20 @@ const Supervisor = sequelize.define('Supervisor', {
     validate: { isEmail: true }
   },
 
-  passwordHash: { type: DataTypes.STRING(120), allowNull: false },
+  // contraseña hasheada con bcrypt
+  password: { type: DataTypes.STRING(200), allowNull: false },
 
-  fullName: { type: DataTypes.STRING(120), allowNull: false },
-
-  phone: { type: DataTypes.STRING(30), allowNull: true },
-
+  // términos/condiciones aceptados
   acceptedTermsAt: { type: DataTypes.DATE, allowNull: true },
 
-  // antes estaba true: ahora false
+  // verificación de correo
   emailVerified: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
-
-  // nuevos campos:
   emailVerifyToken: { type: DataTypes.STRING(120), allowNull: true },
-  emailVerifyTokenExpires: { type: DataTypes.DATE, allowNull: true }
+  emailVerifyTokenExpires: { type: DataTypes.DATE, allowNull: true },
+
+  // recuperación de contraseña
+  resetPasswordToken: { type: DataTypes.STRING(120), allowNull: true },
+  resetPasswordExpires: { type: DataTypes.DATE, allowNull: true }
 }, {
   tableName: 'supervisors',
   timestamps: true
