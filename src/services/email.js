@@ -9,7 +9,7 @@ async function sendVerificationEmail({ to, fullName, verifyUrl }) {
   const html = `
   <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:auto;padding:24px;border:1px solid #eee;border-radius:12px">
     <div style="text-align:center">
-      <img src="https://dummyimage.com/120x120/000/fff&text=SP" alt="SafePlay" width="80" height="80" style="border-radius:12px"/>
+      <img src="/images/logo1.png" alt="SafePlay" width="80" height="80" style="border-radius:12px"/>
       <h2 style="margin:16px 0;font-weight:700">¡Hola ${fullName}!</h2>
       <p style="color:#444;line-height:1.6">
         Gracias por registrarte en <strong>SafePlay</strong>.<br/>
