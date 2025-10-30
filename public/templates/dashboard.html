@@ -551,19 +551,17 @@
 
       <!-- ACTIVIDAD EN VIVO -->
       <div class="card full-width">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2 style="margin: 0;">📹 Actividad en Vivo</h2>
-          <button class="btn btn-primary" onclick="sendActivityEmail()" id="emailBtn" style="padding: 8px 16px; font-size: 0.9rem;">
-            📧 Enviar por Email
-          </button>
-        </div>
+        <h2>📹 Actividad en Vivo</h2>
         <div class="activity-log" id="activityLog">
           <p style="color: #95a5a6; text-align: center;">Sin actividad</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
 <footer>
-  <p>&copy; 2025 SafePlay. Todos los derechos reservados.</p>
+  <p>&copy; 2024 SafePlay. Todos los derechos reservados.</p>
 </footer>
 
 <script>
@@ -572,22 +570,6 @@
 
   if (!token) {
     location.href = '/login.html';
-  }
-
-  async function sendActivityEmail() {
-    const btn = document.getElementById('emailBtn');
-    btn.disabled = true;
-    btn.textContent = '📧 Enviando...';
-
-    try {
-      const data = await apiCall('POST', '/activity/send-email');
-      showMessage(`✅ Historial enviado (${data.count} registros)`, 'success');
-    } catch (error) {
-      showMessage(`❌ Error: ${error.message}`, 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '📧 Enviar por Email';
-    }
   }
 
   function showMessage(text, type = 'success') {
