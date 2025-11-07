@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { Supervisor } = require('../models');
-const { sendVerificationEmail } = require('../services/email');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/email');
 
 // === helpers ===
 const signToken = (payload) =>
@@ -16,15 +16,17 @@ const isEmail = (str = '') => /\S+@\S+\.\S+/.test(String(str).trim() || '');
 const now = () => new Date();
 const addMinutes = (d, m) => new Date(d.getTime() + m * 60000);
 
-// Helper: determina base URL dinámica
+// Reglas de contraseña fuerte: 8+ chars, mayúscula, minúscula, número y símbolo
+const strongPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{8,}$/;
+
+// Base URL según entorno / proxy (Render)
 function getBaseUrl(req) {
   const envBase =
     process.env.APP_BASE_URL ||
     process.env.BASE_URL ||
     process.env.PUBLIC_URL;
-  if (envBase) return envBase.replace(/\/+$/, ''); // sin slash final
-  const proto =
-    req.headers['x-forwarded-proto'] || req.protocol || 'https';
+  if (envBase) return envBase.replace(/\/+$/, '');
+  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'https';
   const host = req.get('host');
   return `${proto}://${host}`;
 }
@@ -40,6 +42,13 @@ router.post('/register', async (req, res) => {
     if (!isEmail(email)) return res.status(400).json({ error: 'Correo inválido' });
     if (!terms) return res.status(400).json({ error: 'Debes aceptar los términos' });
 
+    // Validación de contraseña fuerte
+    if (!strongPass.test(password)) {
+      return res.status(400).json({
+        error: 'La contraseña debe tener mínimo 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos.'
+      });
+    }
+
     const dupEmail = await Supervisor.findOne({ where: { email } });
     if (dupEmail) return res.status(409).json({ error: 'El correo ya está registrado' });
 
@@ -52,7 +61,7 @@ router.post('/register', async (req, res) => {
     const emailVerifyToken = crypto.randomBytes(32).toString('hex');
     const emailVerifyTokenExpires = addMinutes(now(), 60);
 
-    const sup = await Supervisor.create({
+    await Supervisor.create({
       username,
       email,
       passwordHash,
@@ -131,7 +140,7 @@ router.post('/resend-verification', async (req, res) => {
   }
 });
 
-// ========== LOGIN ==========
+// ========== LOGIN con bloqueo (3 intentos) ==========
 router.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body || {};
@@ -143,8 +152,27 @@ router.post('/login', async (req, res) => {
     const sup = await Supervisor.findOne({ where });
     if (!sup) return res.status(401).json({ error: 'Credenciales inválidas' });
 
+    // ¿Cuenta forzada a reset?
+    if (sup.mustResetPassword) {
+      return res.status(423).json({
+        error: 'Cuenta bloqueada por intentos fallidos. Debes restablecer tu contraseña.',
+        locked: true
+      });
+    }
+
     const ok = await bcrypt.compare(password, sup.passwordHash);
-    if (!ok) return res.status(401).json({ error: 'Credenciales inválidas' });
+    if (!ok) {
+      sup.loginAttempts = (sup.loginAttempts || 0) + 1;
+      if (sup.loginAttempts >= 3) {
+        sup.mustResetPassword = true; // se bloquea hasta reset
+      }
+      await sup.save();
+      return res.status(401).json({
+        error: sup.mustResetPassword
+          ? 'Cuenta bloqueada por intentos fallidos. Debes restablecer tu contraseña.'
+          : 'Credenciales inválidas'
+      });
+    }
 
     if (!sup.emailVerified) {
       return res.status(403).json({
@@ -153,8 +181,91 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // OK: limpiar intentos/bloqueo
+    sup.loginAttempts = 0;
+    sup.mustResetPassword = false;
+    await sup.save();
+
     const token = signToken({ id: sup.id, username: sup.username });
     return res.json({ message: '✅ Login exitoso', token });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// ========== OLVIDÉ MI CONTRASEÑA ==========
+router.post('/forgot', async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    // Respuesta uniforme (no revelamos existencia)
+    if (!isEmail(email)) return res.json({ message: 'Si el correo existe, enviaremos instrucciones.' });
+
+    const sup = await Supervisor.findOne({ where: { email } });
+    if (!sup) return res.json({ message: 'Si el correo existe, enviaremos instrucciones.' });
+
+    sup.resetPasswordToken = crypto.randomBytes(32).toString('hex');
+    sup.resetPasswordExpires = addMinutes(now(), 30);
+    await sup.save();
+
+    const base = getBaseUrl(req);
+    const resetUrl = `${base}/templates/reset-password.html?token=${encodeURIComponent(sup.resetPasswordToken)}`;
+
+    await sendPasswordResetEmail({ to: sup.email, fullName: sup.fullName, resetUrl });
+
+    return res.json({ message: 'Si el correo existe, enviaremos instrucciones.' });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+// (Opcional) Validar token antes de mostrar el form
+router.get('/check-reset', async (req, res) => {
+  try {
+    const { token } = req.query || {};
+    if (!token) return res.status(400).json({ ok: false, error: 'Token faltante' });
+
+    const sup = await Supervisor.findOne({ where: { resetPasswordToken: token } });
+    if (!sup || !sup.resetPasswordExpires || sup.resetPasswordExpires < now()) {
+      return res.status(400).json({ ok: false, error: 'Token inválido o expirado' });
+    }
+    return res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// ========== RESTABLECER CONTRASEÑA ==========
+router.post('/reset', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body || {};
+    if (!token || !newPassword) {
+      return res.status(400).json({ error: 'Faltan datos' });
+    }
+
+    // Validación de contraseña fuerte
+    if (!strongPass.test(newPassword)) {
+      return res.status(400).json({
+        error: 'La nueva contraseña debe tener mínimo 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos.'
+      });
+    }
+
+    const sup = await Supervisor.findOne({ where: { resetPasswordToken: token } });
+    if (!sup || !sup.resetPasswordExpires || sup.resetPasswordExpires < now()) {
+      return res.status(400).json({ error: 'Token inválido o expirado' });
+    }
+
+    sup.passwordHash = await bcrypt.hash(newPassword, 10);
+    // limpiar estado de reset y bloqueo
+    sup.resetPasswordToken = null;
+    sup.resetPasswordExpires = null;
+    sup.loginAttempts = 0;
+    sup.mustResetPassword = false;
+    await sup.save();
+
+    return res.json({ message: 'Contraseña actualizada. Ya puedes iniciar sesión.' });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: e.message });
