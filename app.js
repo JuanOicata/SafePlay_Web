@@ -1,10 +1,4 @@
-// 🔒 Forzar HTTPS en producción
-app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect('https://' + req.headers.host + req.url);
-  }
-  next();
-});
+
 
 // app.js
 const express = require('express');
@@ -16,6 +10,14 @@ require('dotenv').config();
 
 const app = express();
 app.set('trust proxy', 1);
+
+// 🔒 Forzar HTTPS en producción
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
 
 // ==================== SEGURIDAD ====================
 app.use(
