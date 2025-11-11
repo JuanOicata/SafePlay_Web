@@ -42,12 +42,15 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const EMAIL_FROM = process.env.EMAIL_FROM || 'no-reply@example.com';
 
+/**
+ * Envía email de verificación al registrarse
+ */
 async function sendVerificationEmail({ to, fullName, verifyUrl }) {
   const subject = 'Verifica tu correo – Bienvenido a SafePlay';
   const html = `
   <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:auto;padding:24px;border:1px solid #eee;border-radius:12px">
     <div style="text-align:center">
-      <img src="/images/logo1.png" alt="SafePlay" width="80" height="80" style="border-radius:12px"/>
+      <img src="https://raw.githubusercontent.com/JuanOicata/SafePlay_Web/main/public/images/logo1.webp" alt="SafePlay" width="80" height="80" style="border-radius:12px"/>
       <h2 style="margin:16px 0;font-weight:700">¡Hola ${fullName}!</h2>
       <p style="color:#444;line-height:1.6">
         Gracias por registrarte en <strong>SafePlay</strong>.<br/>
@@ -74,11 +77,40 @@ async function sendVerificationEmail({ to, fullName, verifyUrl }) {
 }
 
 /**
+ * Envía email para restablecer contraseña
+ */
+async function sendPasswordResetEmail({ to, fullName, resetUrl }) {
+  const subject = 'Restablece tu contraseña – SafePlay';
+  const html = `
+  <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:auto;padding:24px;border:1px solid #eee;border-radius:12px">
+    <div style="text-align:center">
+      <img src="https://raw.githubusercontent.com/JuanOicata/SafePlay_Web/main/public/images/logo1.webp" alt="SafePlay" width="80" height="80" style="border-radius:12px"/>
+      <h2 style="margin:16px 0;font-weight:700">Hola ${fullName}</h2>
+      <p style="color:#444;line-height:1.6">
+        Recibimos una solicitud para restablecer tu contraseña.<br/>
+        Haz clic en el botón para continuar:
+      </p>
+      <p>
+        <a href="${resetUrl}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:600">
+          Restablecer contraseña
+        </a>
+      </p>
+      <p style="color:#666;font-size:12px;margin-top:16px">
+        Este enlace expira en 30 minutos. Si no lo solicitaste, ignora este mensaje.
+      </p>
+      <p style="color:#666;font-size:12px">
+        URL alternativa:<br/>
+        <span style="word-break:break-all;color:#333">${resetUrl}</span>
+      </p>
+    </div>
+  </div>
+  `;
+
+  await resend.emails.send({ from: EMAIL_FROM, to, subject, html });
+}
+
+/**
  * Envía el historial de actividad de las últimas 24 horas
- * @param {Object} params
- * @param {string} params.to - Email del destinatario
- * @param {string} params.fullName - Nombre completo del supervisor
- * @param {Array} params.activities - Array de logs de actividad
  */
 async function sendActivityHistoryEmail({ to, fullName, activities }) {
   const subject = 'Historial de Actividad - Últimas 24 horas';
@@ -223,8 +255,10 @@ function getColorForAction(action) {
   return colors[action] || '#7f8c8d';
 }
 
+// ✅ ÚNICO module.exports con TODAS las funciones
 module.exports = {
   sendVerificationEmail,
+  sendPasswordResetEmail,
   sendActivityHistoryEmail
 };
 module.exports = { sendVerificationEmail, sendPasswordResetEmail };
