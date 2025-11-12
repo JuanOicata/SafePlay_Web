@@ -437,9 +437,35 @@
       background: #2c3e50;
       color: white;
       text-align: center;
-      padding: 1rem 0;
-      margin-top: 1rem;
+      padding: 2rem 0;
+      margin-top: 2rem;
       width: 100%;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .footer-section h4 {
+      color: #87CEEB;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .footer-section p {
+      color: #95a5a6;
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #34495e;
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+      color: #95a5a6;
     }
 
     /* Responsive */
@@ -626,24 +652,47 @@
         </div>
       </div>
 
-<footer>
-  <p>&copy; 2024 SafePlay. Todos los derechos reservados.</p>
-</footer>
+      <footer>
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-section">
+              <h4>SafePlay Control</h4>
+              <p>Control parental inteligente para videojuegos</p>
+            </div>
+            <div class="footer-section">
+              <h4>Enlaces</h4>
+              <p><a href="/dashboard" style="color: #87CEEB;">Dashboard</a></p>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <p>&copy; 2024 SafePlay. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </footer>
 
 <script>
 
   async function loadUserInfo() {
     try {
-      // Temporalmente usa datos hardcodeados para probar
-      document.getElementById('userName').textContent = 'Juan Pérez';
-      document.getElementById('userEmail').textContent = 'juan@ejemplo.com';
+      // Decodificar el token JWT para obtener la información del usuario
+      const token = localStorage.getItem('token');
+      if (!token) {
+        location.href = '/login.html';
+        return;
+      }
 
-      // Luego descomenta esto cuando tengas el endpoint:
-      // const data = await apiCall('GET', '/user/profile');
-      // document.getElementById('userName').textContent = data.username;
-      // document.getElementById('userEmail').textContent = data.email;
+      // Decodificar el payload del JWT (parte central del token)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+
+      // Mostrar username y email del token
+      document.getElementById('userName').textContent = payload.username || 'Usuario';
+      document.getElementById('userEmail').textContent = payload.email || 'email@ejemplo.com';
+
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error cargando usuario:', error);
+      // Si hay error, usar valores por defecto
+      document.getElementById('userName').textContent = 'Usuario';
+      document.getElementById('userEmail').textContent = 'email@ejemplo.com';
     }
   }
 
