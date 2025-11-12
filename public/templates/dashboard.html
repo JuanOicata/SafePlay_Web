@@ -438,7 +438,7 @@
       color: white;
       text-align: center;
       padding: 2rem 0;
-      margin-top: 2rem;
+      margin-top: 3rem;
       width: 100%;
     }
 
@@ -450,21 +450,37 @@
       text-align: left;
     }
 
+    .footer-section {
+      padding: 0 1rem;
+    }
+
     .footer-section h4 {
       color: #87CEEB;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       font-size: 1.1rem;
     }
 
     .footer-section p {
       color: #95a5a6;
       font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .footer-section a {
+      color: #87CEEB;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+      color: #4682B4;
+      text-decoration: underline;
     }
 
     .footer-bottom {
       border-top: 1px solid #34495e;
       padding-top: 1.5rem;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       color: #95a5a6;
     }
 
@@ -527,6 +543,21 @@
 
       .activity-log, .commands-history {
         max-height: 300px;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
+      }
+
+      .footer-section {
+        padding: 0;
+      }
+
+      footer {
+        padding: 1.5rem 0;
+        margin-top: 2rem;
       }
     }
 
@@ -661,11 +692,18 @@
             </div>
             <div class="footer-section">
               <h4>Enlaces</h4>
-              <p><a href="/dashboard" style="color: #87CEEB;">Dashboard</a></p>
+              <p>
+                <a href="/dashboard">Dashboard</a> •
+                <a href="/templates/index.html">Inicio</a>
+              </p>
+            </div>
+            <div class="footer-section">
+              <h4>Contacto</h4>
+              <p>soportesafeplay@gmail.com<br>+57 - 3224687627</p>
             </div>
           </div>
           <div class="footer-bottom">
-            <p>&copy; 2024 SafePlay. Todos los derechos reservados.</p>
+            <p>&copy; 2025 SafePlay. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
@@ -674,25 +712,43 @@
 
   async function loadUserInfo() {
     try {
-      // Decodificar el token JWT para obtener la información del usuario
       const token = localStorage.getItem('token');
       if (!token) {
         location.href = '/login.html';
         return;
       }
 
-      // Decodificar el payload del JWT (parte central del token)
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      // Llamar al endpoint /api/me para obtener datos completos
+      const res = await fetch('/api/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-      // Mostrar username y email del token
-      document.getElementById('userName').textContent = payload.username || 'Usuario';
-      document.getElementById('userEmail').textContent = payload.email || 'email@ejemplo.com';
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        localStorage.removeItem('token');
+        location.href = '/login.html';
+        return;
+      }
+
+      // Actualizar la interfaz con los datos reales
+      document.getElementById('userName').textContent = data.fullName || data.username || 'Usuario';
+      document.getElementById('userEmail').textContent = data.email || 'email@ejemplo.com';
 
     } catch (error) {
       console.error('Error cargando usuario:', error);
-      // Si hay error, usar valores por defecto
-      document.getElementById('userName').textContent = 'Usuario';
-      document.getElementById('userEmail').textContent = 'email@ejemplo.com';
+      // Si falla, intentar decodificar el token como fallback
+      try {
+        const token = localStorage.getItem('token');
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        document.getElementById('userName').textContent = payload.username || 'Usuario';
+        document.getElementById('userEmail').textContent = 'Cargando...';
+      } catch {
+        document.getElementById('userName').textContent = 'Usuario';
+        document.getElementById('userEmail').textContent = 'email@ejemplo.com';
+      }
     }
   }
 
