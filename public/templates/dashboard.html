@@ -72,6 +72,33 @@
       align-items: center;
     }
 
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      border: 2px solid #87CEEB;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .user-name {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+
+    .user-email {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+
     .btn {
       padding: 12px 24px;
       border: none;
@@ -409,12 +436,34 @@
       background: #2c3e50;
       color: white;
       text-align: center;
-      padding: 2rem 0;
-      margin-top: 3rem;
+      padding: 1.5rem 0; /* Reducido de 2rem */
+      margin-top: 2rem; /* Reducido de 3rem */
+      position: relative;
+      bottom: 0;
+      width: 100%;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
+
+      .user-info {
+        flex-direction: column;
+        padding: 0.5rem;
+        gap: 0.3rem;
+      }
+
+      .user-details {
+        align-items: center;
+      }
+
+      .user-name {
+        font-size: 0.9rem;
+      }
+
+      .user-email {
+        font-size: 0.75rem;
+      }
+
       header {
         padding: 0.8rem 0;
       }
@@ -471,6 +520,12 @@
   <nav class="container">
     <a href="/" class="logo">SafePlay Control</a>
     <div class="nav-buttons">
+      <div class="user-info">
+        <div class="user-details">
+          <span class="user-name" id="userName">Usuario</span>
+          <span class="user-email" id="userEmail">email@ejemplo.com</span>
+        </div>
+      </div>
       <button class="btn btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
   </nav>
@@ -567,6 +622,16 @@
 </footer>
 
 <script>
+
+  async function loadUserInfo() {
+    try {
+      const data = await apiCall('GET', '/user/profile'); // Ajusta el endpoint según tu API
+      document.getElementById('userName').textContent = data.username || 'Usuario';
+      document.getElementById('userEmail').textContent = data.email || 'email@ejemplo.com';
+    } catch (error) {
+      console.error('Error cargando usuario:', error);
+    }
+  }
 
   async function sendActivityEmail() {
     const btn = document.getElementById('emailBtn');
@@ -767,6 +832,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    loadUserInfo();
     loadCommandsHistory();
     loadActivity();
     refreshGames();
