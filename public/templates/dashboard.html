@@ -153,7 +153,8 @@
     /* Main Content */
     .main-content {
       padding-top: 120px;
-      padding-bottom: 80px;
+      padding-bottom: 2rem; /* Cambiado de 80px */
+      min-height: calc(100vh - 150px); /* Agregado */
     }
 
     .header-title {
@@ -436,10 +437,8 @@
       background: #2c3e50;
       color: white;
       text-align: center;
-      padding: 1.5rem 0; /* Reducido de 2rem */
-      margin-top: 2rem; /* Reducido de 3rem */
-      position: relative;
-      bottom: 0;
+      padding: 1rem 0;
+      margin-top: 1rem;
       width: 100%;
     }
 
@@ -447,21 +446,31 @@
     @media (max-width: 768px) {
 
       .user-info {
-        flex-direction: column;
-        padding: 0.5rem;
-        gap: 0.3rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border-radius: 15px;
+        border: 2px solid #87CEEB;
+        box-shadow: 0 2px 8px rgba(135, 206, 235, 0.2);
       }
 
       .user-details {
-        align-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
       }
 
       .user-name {
-        font-size: 0.9rem;
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1rem;
       }
 
       .user-email {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
+        color: #7f8c8d;
       }
 
       header {
@@ -625,11 +634,16 @@
 
   async function loadUserInfo() {
     try {
-      const data = await apiCall('GET', '/user/profile'); // Ajusta el endpoint según tu API
-      document.getElementById('userName').textContent = data.username || 'Usuario';
-      document.getElementById('userEmail').textContent = data.email || 'email@ejemplo.com';
+      // Temporalmente usa datos hardcodeados para probar
+      document.getElementById('userName').textContent = 'Juan Pérez';
+      document.getElementById('userEmail').textContent = 'juan@ejemplo.com';
+
+      // Luego descomenta esto cuando tengas el endpoint:
+      // const data = await apiCall('GET', '/user/profile');
+      // document.getElementById('userName').textContent = data.username;
+      // document.getElementById('userEmail').textContent = data.email;
     } catch (error) {
-      console.error('Error cargando usuario:', error);
+      console.error('Error:', error);
     }
   }
 
@@ -832,7 +846,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    loadUserInfo();
+    loadUserInfo(); // ← Asegúrate de tener esta línea
     loadCommandsHistory();
     loadActivity();
     refreshGames();
