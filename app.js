@@ -97,4 +97,6 @@ app.get('/robots.txt', (req, res) => {
 // ==================== CATCH-ALL ====================
 app.use('*', (_req, res) => res.redirect('/'));
 
+// En tu server.js o app.js
+app.use(express.static('public'));
 module.exports = app;
