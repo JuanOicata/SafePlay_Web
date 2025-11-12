@@ -446,11 +446,33 @@
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 2rem;
       margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .footer-section {
+      padding: 0 1rem;
     }
 
     .footer-section h4 {
       color: #87CEEB;
       margin-bottom: 1rem;
+    }
+
+    .footer-section p {
+      color: #95a5a6;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .footer-section a {
+      color: #87CEEB;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+      color: #4682B4;
+      text-decoration: underline;
     }
 
     .footer-bottom {
@@ -472,6 +494,16 @@
         border-radius: 15px;
         border: 2px solid #87CEEB;
         box-shadow: 0 2px 8px rgba(135, 206, 235, 0.2);
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
+      }
+
+      .footer-section {
+        padding: 0;
       }
 
       .user-details {
@@ -644,32 +676,35 @@
           <p style="color: #95a5a6; text-align: center;">Sin actividad</p>
         </div>
       </div>
+    </div> <!-- Cierre del último card -->
+  </div> <!-- Cierre del grid -->
+</div> <!-- Cierre del container -->
 
-      <footer>
-        <div class="container">
-          <div class="footer-content">
-            <div class="footer-section">
-              <h4>SafePlay</h4>
-              <p>Control remoto de juegos para supervisores responsables.</p>
-            </div>
-            <div class="footer-section">
-              <h4>Enlaces Rápidos</h4>
-              <p>
-                <a href="/" style="color:#87CEEB; text-decoration:none;">Inicio</a> •
-                <a href="/register" style="color:#87CEEB; text-decoration:none;">Registro</a> •
-                <a href="/download" style="color:#87CEEB; text-decoration:none;">Descarga</a>
-              </p>
-            </div>
-            <div class="footer-section">
-              <h4>Contacto</h4>
-              <p>soportesafeplay@gmail.com<br>+57 - 3224687627</p>
-            </div>
-          </div>
-          <div class="footer-bottom">
-            <p>&copy; 2025 SafePlay. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>SafePlay</h4>
+        <p>Control remoto de juegos para supervisores responsables.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Enlaces Rápidos</h4>
+        <p>
+          <a href="/" style="color:#87CEEB; text-decoration:none;">Inicio</a> •
+          <a href="/register" style="color:#87CEEB; text-decoration:none;">Registro</a> •
+          <a href="/download" style="color:#87CEEB; text-decoration:none;">Descarga</a>
+        </p>
+      </div>
+      <div class="footer-section">
+        <h4>Contacto</h4>
+        <p>soportesafeplay@gmail.com<br>+57 - 3224687627</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 SafePlay. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
 
 <script>
 
