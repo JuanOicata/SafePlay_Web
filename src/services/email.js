@@ -12,7 +12,7 @@ async function sendVerificationEmail({ to, fullName, verifyUrl }) {
   const html = `
   <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:auto;padding:24px;border:1px solid #eee;border-radius:12px">
     <div style="text-align:center">
-<img src="https://raw.githubusercontent.com/JuanOicata/SafePlay_Web/main/public/images/logo1.webp" alt="SafePlay" width="80" height="80" style="border-radius:12px"/>      <p style="color:#444;line-height:1.6">
+<img src="/images/logo1.webp"  width="80" height="80" style="border-radius:12px"/>      <p style="color:#444;line-height:1.6">
         Gracias por registrarte en <strong>SafePlay</strong>.<br/>
         Para activar tu cuenta, por favor verifica tu correo:
       </p>
