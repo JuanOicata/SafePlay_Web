@@ -751,15 +751,26 @@
   }
 
   async function sendActivityEmail() {
+    // Mostrar mensaje de confirmación
+    const confirmed = confirm(
+            '📧 ¿Deseas enviar el historial de actividad de las últimas 24 horas por correo?\n\n' +
+            'Se enviará un reporte detallado a tu email registrado.'
+    );
+
+    // Si el usuario cancela, no hacer nada
+    if (!confirmed) {
+      return;
+    }
+
     const btn = document.getElementById('emailBtn');
     btn.disabled = true;
     btn.textContent = '📧 Enviando...';
 
     try {
       const data = await apiCall('POST', '/activity/send-email');
-      showMessage(`✅ Historial enviado (${data.count} registros)`, 'success');
+      showMessage(`✅ Historial enviado exitosamente (${data.count} registros)`, 'success');
     } catch (error) {
-      showMessage(`❌ Error: ${error.message}`, 'error');
+      showMessage(`❌ Error al enviar: ${error.message}`, 'error');
     } finally {
       btn.disabled = false;
       btn.textContent = '📧 Enviar por Email';
