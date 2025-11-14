@@ -272,4 +272,64 @@ router.post('/reset', async (req, res) => {
   }
 });
 
+// ========== ELIMINAR CUENTA ==========
+router.delete('/delete-account', async (req, res) => {
+  try {
+    // Extraer el token del header
+    const hdr = req.headers.authorization || '';
+    const token = hdr.startsWith('Bearer ') ? hdr.slice(7) : null;
+
+    if (!token) {
+      return res.status(401).json({ error: 'Token requerido' });
+    }
+
+    // Verificar el token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretito');
+    } catch {
+      return res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+
+    const userId = decoded.id;
+
+    // Opcional: Validar contraseña si quieres más seguridad
+    const { password } = req.body || {};
+    if (password) {
+      const sup = await Supervisor.findByPk(userId);
+      if (!sup) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const validPassword = await bcrypt.compare(password, sup.passwordHash);
+      if (!validPassword) {
+        return res.status(401).json({ error: 'Contraseña incorrecta' });
+      }
+    }
+
+    // Eliminar datos relacionados si existen
+    // Nota: Ajusta según tus modelos reales
+    const { Command, Activity } = require('../models');
+
+    if (Command) {
+      await Command.destroy({ where: { supervisorId: userId } });
+    }
+    if (Activity) {
+      await Activity.destroy({ where: { supervisorId: userId } });
+    }
+
+    // Eliminar la cuenta del supervisor
+    await Supervisor.destroy({ where: { id: userId } });
+
+    return res.json({
+      success: true,
+      message: 'Cuenta eliminada permanentemente'
+    });
+
+  } catch (error) {
+    console.error('Error al eliminar cuenta:', error);
+    return res.status(500).json({ error: 'Error al eliminar la cuenta' });
+  }
+});
+
 module.exports = router;
