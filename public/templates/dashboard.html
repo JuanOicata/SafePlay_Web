@@ -586,6 +586,7 @@
           <span class="user-email" id="userEmail">email@ejemplo.com</span>
         </div>
       </div>
+      <button class="btn btn-danger" onclick="confirmDeleteAccount()" style="padding: 8px 16px; font-size: 0.85rem;">🗑️ Eliminar Cuenta</button>
       <button class="btn btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
   </nav>
@@ -707,6 +708,72 @@
 </footer>
 
 <script>
+
+  /**
+   * Confirma y elimina la cuenta del usuario
+   */
+  async function confirmDeleteAccount() {
+    const confirmed = confirm(
+            '⚠️ ADVERTENCIA: Esta acción es IRREVERSIBLE\n\n' +
+            '¿Estás seguro de que deseas eliminar tu cuenta?\n\n' +
+            '• Se eliminarán todos tus datos permanentemente\n' +
+            '• Se eliminarán todos los comandos y actividad\n' +
+            '• No podrás recuperar esta información\n' +
+            '• Tu correo quedará disponible para un nuevo registro\n\n' +
+            'Presiona OK para continuar o Cancelar para volver.'
+    );
+
+    if (!confirmed) return;
+
+    // Segunda confirmación con texto
+    const confirmText = prompt(
+            'Por seguridad, escribe "ELIMINAR" (en mayúsculas) para confirmar la eliminación permanente de tu cuenta:'
+    );
+
+    if (confirmText !== 'ELIMINAR') {
+      showMessage('❌ Eliminación cancelada. Tu cuenta no ha sido modificada.', 'info');
+      return;
+    }
+
+    // Opcional: pedir contraseña para mayor seguridad
+    const password = prompt('Por favor, ingresa tu contraseña para confirmar:');
+    if (!password) {
+      showMessage('❌ Eliminación cancelada', 'info');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/auth/delete-account', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password }) // Enviar contraseña para validación
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Error al eliminar cuenta');
+      }
+
+      // Limpiar token
+      localStorage.removeItem('token');
+
+      // Mostrar mensaje final
+      alert('✅ Tu cuenta ha sido eliminada permanentemente.\n\nGracias por usar SafePlay.');
+
+      // Redirigir a la página principal
+      location.href = '/';
+
+    } catch (error) {
+      console.error('Error:', error);
+      showMessage(`❌ Error: ${error.message}`, 'error');
+    }
+  }
+
 
   async function loadUserInfo() {
     try {
