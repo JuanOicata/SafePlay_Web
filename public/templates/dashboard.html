@@ -573,6 +573,21 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #4682B4;
     }
+    /* Estilos para las preguntas frecuentes */
+    details summary {
+      transition: color 0.3s ease;
+    }
+
+    details summary:hover {
+      color: #1565c0 !important;
+    }
+
+    details[open] summary {
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e3f2fd;
+    }
+
   </style>
 </head>
 <body>
@@ -597,6 +612,135 @@
     <div class="header-title">
       <h1>Panel de Control 🎮</h1>
       <p>Supervisa y controla los juegos remotamente</p>
+    </div>
+
+    <!-- PANEL DE INSTRUCCIONES -->
+    <div class="card instructions-panel" style="margin-bottom: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="margin: 0;">📖 ¿Cómo usar el panel?</h2>
+        <button class="btn btn-primary" onclick="toggleInstructions()" id="toggleBtn" style="padding: 8px 16px; font-size: 0.9rem;">
+          Ocultar
+        </button>
+      </div>
+
+      <div id="instructionsContent">
+        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+          <h3 style="color: #1976d2; margin-bottom: 1rem; font-size: 1.1rem;">🎯 ¿Qué es SafePlay?</h3>
+          <p style="color: #424242; line-height: 1.8; margin: 0;">
+            SafePlay te permite supervisar y controlar el tiempo de juego de otra persona desde cualquier lugar.
+            Es ideal para padres que desean establecer límites saludables en el uso de videojuegos de sus hijos.
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+
+          <!-- Instrucción 1: Bloquear -->
+          <div style="background: #fff3e0; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #ff9800;">
+            <h4 style="color: #e65100; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">🚫</span> Bloquear un Juego
+            </h4>
+            <ol style="color: #5d4037; line-height: 1.8; padding-left: 1.2rem; margin: 0;">
+              <li>Escribe el <strong>nombre exacto</strong> del juego (ej: "Minecraft", "Fortnite")</li>
+              <li>Haz clic en el botón <strong>"Bloquear"</strong></li>
+              <li>El juego se cerrará <strong>inmediatamente</strong> en la computadora</li>
+            </ol>
+            <div style="background: white; padding: 0.8rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; color: #666;">
+              💡 <strong>Tip:</strong> Si no sabes el nombre exacto, revisa la sección "Juegos Detectados" más abajo.
+            </div>
+          </div>
+
+          <!-- Instrucción 2: Timer -->
+          <div style="background: #fff9c4; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #fbc02d;">
+            <h4 style="color: #f57f17; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">⏱️</span> Establecer Tiempo Límite
+            </h4>
+            <ol style="color: #5d4037; line-height: 1.8; padding-left: 1.2rem; margin: 0;">
+              <li>Escribe el <strong>nombre del juego</strong></li>
+              <li>Indica cuántos <strong>minutos</strong> puede jugar (ej: 60 para 1 hora)</li>
+              <li>Haz clic en <strong>"Establecer"</strong></li>
+              <li>El juego se cerrará automáticamente cuando se acabe el tiempo</li>
+            </ol>
+            <div style="background: white; padding: 0.8rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; color: #666;">
+              💡 <strong>Tip:</strong> Puedes establecer desde 1 minuto hasta 8 horas (480 minutos).
+            </div>
+          </div>
+
+          <!-- Instrucción 3: Ver actividad -->
+          <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #4caf50;">
+            <h4 style="color: #2e7d32; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">📊</span> Monitorear Actividad
+            </h4>
+            <ul style="color: #1b5e20; line-height: 1.8; padding-left: 1.2rem; margin: 0;">
+              <li><strong>Juegos Detectados:</strong> Muestra qué juegos están abiertos ahora mismo</li>
+              <li><strong>Estado:</strong> Cantidad de comandos pendientes y ejecutados</li>
+              <li><strong>Historial de Comandos:</strong> Registra todas las acciones que has realizado</li>
+              <li><strong>Actividad en Vivo:</strong> Muestra cuando se abre o cierra un juego</li>
+            </ul>
+            <div style="background: white; padding: 0.8rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; color: #666;">
+              💡 <strong>Tip:</strong> Los datos se actualizan automáticamente cada 10 segundos.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Requisitos importantes -->
+        <div style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; border: 2px solid #ef5350;">
+          <h4 style="color: #c62828; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.5rem;">⚠️</span> Importante - Requisitos
+          </h4>
+          <div style="color: #b71c1c; line-height: 1.8;">
+            <p style="margin: 0 0 0.8rem 0;"><strong>Para que SafePlay funcione correctamente:</strong></p>
+            <ol style="padding-left: 1.2rem; margin: 0;">
+              <li>La aplicación de escritorio <strong>SafePlay debe estar instalada y abierta</strong> en la computadora que deseas supervisar</li>
+              <li>La computadora debe tener <strong>conexión a Internet</strong></li>
+              <li>Los nombres de juegos deben escribirse <strong>exactamente</strong> como aparecen en la computadora</li>
+            </ol>
+            <div style="background: white; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+              <p style="margin: 0; font-size: 0.95rem; color: #666;">
+                📥 ¿Aún no tienes la aplicación de escritorio?
+                <a href="/download" style="color: #1976d2; font-weight: 600; text-decoration: none;">Descárgala aquí</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preguntas frecuentes -->
+        <div style="margin-top: 1.5rem; padding: 1.5rem; background: #f5f5f5; border-radius: 12px;">
+          <h4 style="color: #424242; margin-bottom: 1rem;">❓ Preguntas Frecuentes</h4>
+          <div style="display: grid; gap: 1rem;">
+
+            <details style="background: white; padding: 1rem; border-radius: 8px; cursor: pointer;">
+              <summary style="font-weight: 600; color: #1976d2; cursor: pointer;">¿Qué pasa si escribo mal el nombre del juego?</summary>
+              <p style="margin: 0.8rem 0 0 0; color: #666; line-height: 1.6;">
+                Si el nombre no coincide exactamente, el comando no se ejecutará. Verifica el nombre en la sección "Juegos Detectados" o en el historial de actividad.
+              </p>
+            </details>
+
+            <details style="background: white; padding: 1rem; border-radius: 8px; cursor: pointer;">
+              <summary style="font-weight: 600; color: #1976d2; cursor: pointer;">¿El usuario puede ver que estoy supervisando?</summary>
+              <p style="margin: 0.8rem 0 0 0; color: #666; line-height: 1.6;">
+                Sí, la aplicación SafePlay aparece en la barra de tareas. Es importante ser transparente sobre la supervisión.
+              </p>
+            </details>
+
+            <details style="background: white; padding: 1rem; border-radius: 8px; cursor: pointer;">
+              <summary style="font-weight: 600; color: #1976d2; cursor: pointer;">¿Puedo recibir reportes por correo?</summary>
+              <p style="margin: 0.8rem 0 0 0; color: #666; line-height: 1.6;">
+                Sí, usa el botón "📧 Enviar por Email" en la sección de "Actividad en Vivo" para recibir un reporte de las últimas 24 horas.
+              </p>
+            </details>
+
+            <details style="background: white; padding: 1rem; border-radius: 8px; cursor: pointer;">
+              <summary style="font-weight: 600; color: #1976d2; cursor: pointer;">¿Funciona con todos los juegos?</summary>
+              <p style="margin: 0.8rem 0 0 0; color: #666; line-height: 1.6;">
+                SafePlay funciona con la mayoría de juegos de Windows. Algunos juegos con protección anti-trampas avanzada podrían no ser detectados correctamente.
+              </p>
+            </details>
+
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <div id="message" class="message"></div>
@@ -1024,6 +1168,22 @@
   function logout() {
     localStorage.removeItem('token');
     location.href = '/login.html';
+  }
+
+  // Función para mostrar/ocultar instrucciones
+  function toggleInstructions() {
+    const content = document.getElementById('instructionsContent');
+    const btn = document.getElementById('toggleBtn');
+
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+      btn.textContent = 'Ocultar';
+      localStorage.setItem('instructionsVisible', 'true');
+    } else {
+      content.style.display = 'none';
+      btn.textContent = 'Mostrar';
+      localStorage.setItem('instructionsVisible', 'false');
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
