@@ -12,11 +12,13 @@ async function sendVerificationEmail({ to, fullName, verifyUrl }) {
   const html = `
   <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:auto;padding:24px;border:1px solid #eee;border-radius:12px">
     <div style="text-align:center">
-    <img src="/images/icon.png"  width="80" height="80" style="border-radius:12px"/>      <p style="color:#444;line-height:1.6">
+      <img src="https://safeeplay.com/images/icon.png" alt="SafePlay" width="80" height="80" style="border-radius:12px;margin-bottom:16px"/>
+      <h2 style="color:#111;margin:16px 0">¡Hola, ${fullName}!</h2>
+      <p style="color:#444;line-height:1.6;margin:16px 0">
         Gracias por registrarte en <strong>SafePlay</strong>.<br/>
         Para activar tu cuenta, por favor verifica tu correo:
       </p>
-      <p>
+      <p style="margin:24px 0">
         <a href="${verifyUrl}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:600">
           Verificar mi correo
         </a>
@@ -27,11 +29,11 @@ async function sendVerificationEmail({ to, fullName, verifyUrl }) {
       </p>
     </div>
     <hr style="margin:24px 0;border:none;border-top:1px solid #eee"/>
-    <p style="color:#888;font-size:12px">
+    <p style="color:#888;font-size:12px;text-align:center">
       Si no creaste esta cuenta, ignora este correo.
     </p>
   </div>
-  `;
+`;
 
   await resend.emails.send({ from: EMAIL_FROM, to, subject, html });
 }
