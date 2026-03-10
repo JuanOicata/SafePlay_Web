@@ -59,6 +59,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+// Manejar el botón de descarga del PDF
+    const pdfDownloadBtn = document.getElementById('pdfDownloadBtn');
+    const PDF_URL = 'https://github.com/JuanOicata/SafePlay_Web/releases/download/v1.0.0/Manual.SafeePlay.pdf';
+
+    if (pdfDownloadBtn) {
+        pdfDownloadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const originalText = this.innerHTML;
+            const originalOpacity = this.style.opacity;
+
+            this.innerHTML = '<span>⏳</span> Iniciando descarga...';
+            this.style.opacity = '0.7';
+            this.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                try {
+                    window.location.href = PDF_URL;
+
+                    setTimeout(() => {
+                        this.innerHTML = '<span>✅</span> Descarga iniciada';
+
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.style.opacity = originalOpacity || '1';
+                            this.style.pointerEvents = 'auto';
+                        }, 3000);
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error al iniciar descarga del PDF:', error);
+                    alert('Error al iniciar la descarga del PDF. Por favor, inténtalo de nuevo.');
+                    this.innerHTML = originalText;
+                    this.style.opacity = originalOpacity || '1';
+                    this.style.pointerEvents = 'auto';
+                }
+            }, 800);
+        });
+    }
+
     // Funcionalidad adicional: tracking de descargas (opcional)
     function trackDownload() {
         // Aquí puedes agregar analytics o tracking si lo necesitas
