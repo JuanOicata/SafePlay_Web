@@ -805,7 +805,9 @@
       <!-- GRÁFICA DONA -->
       <div class="card">
         <h2>📈 Resumen Visual</h2>
-        <canvas id="statusChart" style="display:block; margin:0 auto; max-width:250px;"></canvas>
+        <div style="position:relative; width:250px; height:250px; margin:0 auto;">
+          <canvas id="statusChart"></canvas>
+        </div>
         <div id="chartLegend" style="text-align:center; margin-top:1rem; color:#7f8c8d; font-size:0.9rem;">
           Cargando datos...
         </div>
@@ -1208,6 +1210,7 @@
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { position: 'bottom' }
         }
