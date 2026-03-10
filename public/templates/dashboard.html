@@ -805,7 +805,7 @@
       <!-- GRÁFICA DONA -->
       <div class="card">
         <h2>📈 Resumen Visual</h2>
-        <canvas id="statusChart" width="250" height="250" style="display:block; margin:0 auto;"></canvas>
+        <canvas id="statusChart" style="display:block; margin:0 auto; max-width:250px;"></canvas>
         <div id="chartLegend" style="text-align:center; margin-top:1rem; color:#7f8c8d; font-size:0.9rem;">
           Cargando datos...
         </div>
@@ -1182,9 +1182,10 @@
   let donaChart = null;
 
   function updateChart(pending, executed) {
-    const ctx = document.getElementById('statusChart').getContext('2d');
-    const total = pending + executed;
+    const canvas = document.getElementById('statusChart');
+    if (!canvas) return;
 
+    const total = pending + executed;
     document.getElementById('chartLegend').textContent =
             total === 0 ? 'Sin comandos aún' : `Total: ${total} comandos`;
 
@@ -1194,7 +1195,7 @@
       return;
     }
 
-    donaChart = new Chart(ctx, {
+    donaChart = new Chart(canvas, {
       type: 'doughnut',
       data: {
         labels: ['Pendientes', 'Ejecutados'],
@@ -1206,7 +1207,7 @@
         }]
       },
       options: {
-        responsive: false,
+        responsive: true,
         plugins: {
           legend: { position: 'bottom' }
         }
