@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SafePlay - Panel de Control</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * {
       margin: 0;
@@ -801,6 +802,15 @@
         </button>
       </div>
 
+      <!-- GRÁFICA DONA -->
+      <div class="card">
+        <h2>📈 Resumen Visual</h2>
+        <canvas id="statusChart" width="250" height="250" style="display:block; margin:0 auto;"></canvas>
+        <div id="chartLegend" style="text-align:center; margin-top:1rem; color:#7f8c8d; font-size:0.9rem;">
+          Cargando datos...
+        </div>
+      </div>
+
       <!-- HISTORIAL DE COMANDOS -->
       <div class="card full-width">
         <h2>📜 Historial de Comandos</h2>
@@ -1044,6 +1054,10 @@
       showMessage(`✅ ${gameName} será bloqueado`);
       document.getElementById('blockGame').value = '';
       loadCommandsHistory();
+      updateChart(
+              data.commands.filter(c => c.status === 'pending').length,
+              data.commands.filter(c => c.status === 'executed').length
+      );
     } catch (error) {
       showMessage(`❌ ${error.message}`, 'error');
     } finally {
@@ -1165,6 +1179,43 @@
     }
   }
 
+  let donaChart = null;
+
+  function updateChart(pending, executed) {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    const total = pending + executed;
+
+    document.getElementById('chartLegend').textContent =
+            total === 0 ? 'Sin comandos aún' : `Total: ${total} comandos`;
+
+    if (donaChart) {
+      donaChart.data.datasets[0].data = [pending, executed];
+      donaChart.update();
+      return;
+    }
+
+    donaChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pendientes', 'Ejecutados'],
+        datasets: [{
+          data: [pending, executed],
+          backgroundColor: ['#f39c12', '#27ae60'],
+          borderColor: ['#fff', '#fff'],
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  }
+
+
+
   function logout() {
     localStorage.removeItem('token');
     location.href = '/login.html';
@@ -1199,6 +1250,7 @@
       refreshGames();
     }, 10000);
   });
+
 </script>
 </body>
 </html>
