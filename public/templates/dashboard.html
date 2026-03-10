@@ -802,14 +802,32 @@
         </button>
       </div>
 
-      <!-- GRÁFICA DONA -->
-      <div class="card">
-        <h2>📈 Resumen Visual</h2>
-        <div style="position:relative; width:250px; height:250px; margin:0 auto;">
-          <canvas id="statusChart"></canvas>
-        </div>
-        <div id="chartLegend" style="text-align:center; margin-top:1rem; color:#7f8c8d; font-size:0.9rem;">
-          Cargando datos...
+      <!-- GRÁFICAS -->
+      <div class="card full-width">
+        <h2>📊 Resumen Visual</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 1rem;">
+
+          <div>
+            <h3 style="color:#4682B4; font-size:1rem; margin-bottom:0.8rem;">🚫 Juegos más bloqueados</h3>
+            <div style="position:relative; height:220px;">
+              <canvas id="chartBlocked"></canvas>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="color:#4682B4; font-size:1rem; margin-bottom:0.8rem;">⏱️ Tiempo de juego (min)</h3>
+            <div style="position:relative; height:220px;">
+              <canvas id="chartTime"></canvas>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="color:#4682B4; font-size:1rem; margin-bottom:0.8rem;">📅 Actividad por hora</h3>
+            <div style="position:relative; height:220px;">
+              <canvas id="chartHours"></canvas>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -1150,6 +1168,9 @@
 
       document.getElementById('statsComandos').textContent = data.commands.filter(c => c.status === 'pending').length;
     } catch (error) {
+      // Cargar también logs para las gráficas
+      const logsData = await apiCall('GET', '/activity?limit=100');
+      updateCharts(logsData.logs || [], data.commands || []);
       console.error('Error:', error);
     }
   }
@@ -1181,41 +1202,64 @@
     }
   }
 
-  let donaChart = null;
+  let chartBlocked = null, chartTime = null, chartHours = null;
 
-  function updateChart(pending, executed) {
-    const canvas = document.getElementById('statusChart');
-    if (!canvas) return;
-
-    const total = pending + executed;
-    document.getElementById('chartLegend').textContent =
-            total === 0 ? 'Sin comandos aún' : `Total: ${total} comandos`;
-
-    if (donaChart) {
-      donaChart.data.datasets[0].data = [pending, executed];
-      donaChart.update();
-      return;
-    }
-
-    donaChart = new Chart(canvas, {
-      type: 'doughnut',
+  function buildBar(canvasId, labels, data, color, chartRef) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return null;
+    if (chartRef) { chartRef.destroy(); }
+    return new Chart(canvas, {
+      type: 'bar',
       data: {
-        labels: ['Pendientes', 'Ejecutados'],
+        labels: labels.length ? labels : ['Sin datos'],
         datasets: [{
-          data: [pending, executed],
-          backgroundColor: ['#f39c12', '#27ae60'],
-          borderColor: ['#fff', '#fff'],
-          borderWidth: 3
+          data: data.length ? data : [0],
+          backgroundColor: color,
+          borderRadius: 6,
+          borderSkipped: false
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'bottom' }
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
+          x: { ticks: { font: { size: 11 } } }
         }
       }
     });
+  }
+
+  function updateCharts(logs, commands) {
+    // 1. Juegos más bloqueados
+    const blockedCount = {};
+    commands.filter(c => c.action === 'block').forEach(c => {
+      blockedCount[c.target] = (blockedCount[c.target] || 0) + 1;
+    });
+    const blockedLabels = Object.keys(blockedCount);
+    const blockedData = Object.values(blockedCount);
+    chartBlocked = buildBar('chartBlocked', blockedLabels, blockedData, '#e74c3c', chartBlocked);
+
+    // 2. Tiempo de juego por juego
+    const timeCount = {};
+    commands.filter(c => c.action === 'set_timer' && c.duration).forEach(c => {
+      timeCount[c.target] = (timeCount[c.target] || 0) + c.duration;
+    });
+    const timeLabels = Object.keys(timeCount);
+    const timeData = Object.values(timeCount);
+    chartTime = buildBar('chartTime', timeLabels, timeData, '#f39c12', chartTime);
+
+    // 3. Actividad por hora
+    const hoursCount = {};
+    logs.forEach(log => {
+      const h = new Date(log.createdAt).getHours();
+      const label = `${h}:00`;
+      hoursCount[label] = (hoursCount[label] || 0) + 1;
+    });
+    const hourLabels = Object.keys(hoursCount).sort();
+    const hourData = hourLabels.map(h => hoursCount[h]);
+    chartHours = buildBar('chartHours', hourLabels, hourData, '#27ae60', chartHours);
   }
 
 
@@ -1253,6 +1297,7 @@
     loadActivity();
     refreshGames();
     refreshStatus();
+
 
     setInterval(() => {
       loadCommandsHistory();
