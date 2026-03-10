@@ -1144,33 +1144,36 @@
 
   async function loadCommandsHistory() {
     try {
-      const data = await apiCall('GET', '/commands/history?limit=20');
+      const data = await apiCall('GET', '/commands/history?limit=100');
       const container = document.getElementById('commandsHistory');
 
       if (!data.commands?.length) {
         container.innerHTML = '<p style="color: #95a5a6; text-align: center;">Sin comandos</p>';
+        updateCharts([], []);
         return;
       }
 
-      container.innerHTML = data.commands.map(cmd => {
+      container.innerHTML = data.commands.slice(0, 20).map(cmd => {
         const date = new Date(cmd.createdAt);
         const timeStr = date.toLocaleTimeString('es-ES');
         const actionText = { block: 'Bloquear', set_timer: 'Timer' }[cmd.action] || cmd.action;
-
         return `
-          <div class="command-item ${cmd.status}">
-            <div class="activity-action">${actionText} - ${cmd.target || 'N/A'}</div>
-            <div style="color: #7f8c8d; font-size: 0.9rem;">${cmd.duration ? `${cmd.duration} min` : ''}</div>
-            <div class="activity-time">${timeStr} • ${cmd.status}</div>
-          </div>
-        `;
+        <div class="command-item ${cmd.status}">
+          <div class="activity-action">${actionText} - ${cmd.target || 'N/A'}</div>
+          <div style="color: #7f8c8d; font-size: 0.9rem;">${cmd.duration ? `${cmd.duration} min` : ''}</div>
+          <div class="activity-time">${timeStr} • ${cmd.status}</div>
+        </div>
+      `;
       }).join('');
 
       document.getElementById('statsComandos').textContent = data.commands.filter(c => c.status === 'pending').length;
-    } catch (error) {
-      // Cargar también logs para las gráficas
+      document.getElementById('statsEjecutados').textContent = data.commands.filter(c => c.status === 'executed').length;
+
+      // Cargar logs para las gráficas
       const logsData = await apiCall('GET', '/activity?limit=100');
       updateCharts(logsData.logs || [], data.commands || []);
+
+    } catch (error) {
       console.error('Error:', error);
     }
   }
@@ -1285,11 +1288,11 @@
     }
   }
 
-  window.addEventListener('load', () => {
+  /*window.addEventListener('load', () => {
     setTimeout(() => {
       updateChart(2, 5);
     }, 500);
-  });
+  });*/
 
   document.addEventListener('DOMContentLoaded', () => {
     loadUserInfo(); // ← Asegúrate de tener esta línea
