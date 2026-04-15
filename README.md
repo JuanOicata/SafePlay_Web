@@ -1,10 +1,10 @@
-# SafePlay 🛡️
+# SafePlay 
 
 Sistema de control y monitoreo web que permite gestionar dispositivos mediante un panel de administración en línea. El agente se instala desde la web como ejecutable y es controlado remotamente a través de un panel centralizado.
 
 ---
 
-## 🚀 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 - **Runtime:** Node.js
 - **Framework:** Express.js
@@ -16,7 +16,7 @@ Sistema de control y monitoreo web que permite gestionar dispositivos mediante u
 
 ---
 
-## 📁 Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 SafePlay_Web/
@@ -74,7 +74,7 @@ SafePlay_Web/
 
 ---
 
-## ⚙️ Instalación y ejecución
+##  Instalación y ejecución
 
 ### Prerrequisitos
 
@@ -113,11 +113,11 @@ SafePlay_Web/
    node app.js
    ```
 
-5. Abrir en el navegador: `http://localhost:3000`
+5. Abrir en el navegador: `https://safeeplay.com/`
 
 ---
 
-## 🖥️ Uso del sistema
+##  Uso del sistema
 
 1. **Registro/Login:** Accede al panel desde `index.html` o `login.html`.
 2. **Descarga del agente:** Desde la sección de descarga (`download.html`), obtén el ejecutable instalable para el dispositivo a monitorear.
@@ -126,12 +126,14 @@ SafePlay_Web/
 
 ---
 
-## 👥 Autores
+##  Autores
 
-- Desarrollado por el equipo SafePlay
+- Juan Oicata
+- Luis Vega
+- Juan Rodrigues
 
 ---
 
-## 📄 Licencia
+##  Licencia
 
 Este proyecto es de uso académico/privado. Todos los derechos reservados.
